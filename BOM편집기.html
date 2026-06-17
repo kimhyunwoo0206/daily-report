@@ -524,8 +524,7 @@ function closeModal() { document.getElementById('allBomModal').classList.remove(
 function exportCSV() {
   const entries = Object.entries(bom).filter(([k,v])=>v&&v.length>0);
   if (!entries.length) { toast('등록된 BOM이 없습니다'); return; }
-  let csv = '﻿완제품코드,완제품명,자재구분,자재명
-';
+  let csv = '﻿완제품코드,완제품명,자재구분,자재명\n';
   entries.forEach(([code,mats])=>{
     const fp = FG.find(f=>f.code===code); const nm = fp?fp.name:code;
     mats.forEach(m => { csv += `"${code}","${nm}","${m.gbn}","${m.name}"
