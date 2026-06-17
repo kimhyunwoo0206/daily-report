@@ -145,6 +145,24 @@ tbody td.tr{text-align:right}
 .ap-print-step .name{font-size:12px;font-weight:700}
 .ap-print-step .st{font-size:10px;margin-top:2px}
 .ap-print-step .ts{font-size:9px;color:#888;margin-top:1px}
+/* BOM 편집기 */
+.bom-layout{display:grid;grid-template-columns:300px 1fr;gap:16px;min-height:600px}
+.bom-left{display:flex;flex-direction:column;gap:10px}
+.bom-list-wrap{flex:1;overflow-y:auto;max-height:calc(100vh - 220px);border:1.5px solid var(--g2);border-radius:var(--r);background:#fff}
+.bom-item{padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--g2);transition:background .1s;display:flex;align-items:center;justify-content:space-between}
+.bom-item:hover{background:var(--blue-lt)}
+.bom-item.selected{background:var(--blue-lt);border-left:3px solid var(--blue)}
+.bom-item.is-new{background:#fffbea}
+.bom-item-nm{font-size:13px;font-weight:600;color:var(--navy)}
+.bom-item-cd{font-size:11px;color:var(--g4);margin-top:2px}
+.bom-right{background:#fff;border-radius:var(--r);box-shadow:var(--sh);padding:20px;overflow-y:auto;max-height:calc(100vh - 180px)}
+.bom-empty-rt{display:flex;align-items:center;justify-content:center;height:160px;color:var(--g4);font-size:14px}
+.ing-row{display:flex;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid var(--g2)}
+.ing-row select{padding:6px 8px;border:1.5px solid var(--g3);border-radius:6px;font-size:13px;outline:none;width:90px;flex-shrink:0}
+.ing-row input[type=text]{flex:1;padding:6px 10px;border:1.5px solid var(--g3);border-radius:6px;font-size:13px;outline:none}
+.ing-row select:focus,.ing-row input[type=text]:focus{border-color:var(--blue)}
+.bom-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;display:flex;align-items:center;justify-content:center}
+.bom-modal-box{background:#fff;border-radius:12px;padding:28px 24px;width:360px;box-shadow:0 8px 32px rgba(0,0,0,.2)}
 </style>
 </head>
 <body>
@@ -169,6 +187,7 @@ tbody td.tr{text-align:right}
       <div class="topbar-logo">위드프레쉬 <span>ERP</span></div>
       <button class="nav-btn active" id="nav-ilbo" onclick="showPage('ilbo')">📋 일보 결재</button>
       <button class="nav-btn" id="nav-lot" onclick="showPage('lot')">🔍 LOT 조회</button>
+      <button class="nav-btn" id="nav-bom" onclick="showPage('bom')" style="display:none">🗂 BOM 관리</button>
     </div>
     <div style="display:flex;align-items:center">
       <span class="user-badge" id="user-badge"></span>
@@ -257,6 +276,46 @@ tbody td.tr{text-align:right}
         </div>
       </div>
     </div>
+    <!-- BOM 관리 페이지 (admin 전용) -->
+    <div class="page" id="bom-page">
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-hd">
+          <span class="card-title">🗂 BOM 매핑 편집기</span>
+          <button class="btn btn-primary btn-sm" onclick="openBomAddModal()">＋ 신규 완제품 추가</button>
+        </div>
+      </div>
+      <div class="bom-layout">
+        <div class="bom-left">
+          <div class="filter-row">
+            <input type="text" id="bom-search" placeholder="품목명 / 코드 검색" style="flex:1" oninput="renderBomList()">
+          </div>
+          <div style="font-size:11px;color:var(--g4);padding:0 2px" id="bom-count"></div>
+          <div class="bom-list-wrap" id="bom-list"></div>
+        </div>
+        <div class="bom-right" id="bom-right">
+          <div class="bom-empty-rt">← 좌측에서 품목 선택 또는 신규 추가</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 신규 완제품 추가 모달 -->
+<div class="bom-modal-bg" id="bom-modal" style="display:none" onclick="if(event.target===this)closeBomAddModal()">
+  <div class="bom-modal-box">
+    <div style="font-size:16px;font-weight:700;color:var(--navy);margin-bottom:18px">신규 완제품 추가</div>
+    <div style="margin-bottom:14px">
+      <label style="font-size:12px;font-weight:600;color:var(--g5);display:block;margin-bottom:6px">품목코드 <span style="color:var(--g4);font-weight:400">(예: P-576)</span></label>
+      <input type="text" id="bom-new-cd" placeholder="P-XXX" style="width:100%;padding:9px 12px;border:1.5px solid var(--g3);border-radius:var(--r);font-size:14px;outline:none" onkeydown="if(event.key==='Enter')document.getElementById('bom-new-nm').focus()">
+    </div>
+    <div style="margin-bottom:20px">
+      <label style="font-size:12px;font-weight:600;color:var(--g5);display:block;margin-bottom:6px">완제품명</label>
+      <input type="text" id="bom-new-nm" placeholder="예: 손질병어300g" style="width:100%;padding:9px 12px;border:1.5px solid var(--g3);border-radius:var(--r);font-size:14px;outline:none" onkeydown="if(event.key==='Enter')confirmBomAdd()">
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" style="flex:1" onclick="confirmBomAdd()">추가 →</button>
+      <button class="btn btn-outline" style="flex:1" onclick="closeBomAddModal()">취소</button>
+    </div>
+    <div id="bom-modal-err" style="color:var(--red);font-size:12px;margin-top:10px;text-align:center;min-height:16px"></div>
   </div>
 </div>
 <script>
@@ -285,6 +344,7 @@ function doLogin(){
   document.getElementById('f-month').value=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
   document.getElementById('list-body').innerHTML='<div class="loading"><div class="spinner"></div><br>수불DB 로딩 중...</div>';
   loadDB().then(loadList);
+  if(CU.role==='admin'){document.getElementById('nav-bom').style.display='';loadBomEdits();}
 }
 function doLogout(){
   CU=null;DB=null;
@@ -770,6 +830,178 @@ function searchLot(){
     h+='</tbody></table></div>';
   });
   div.innerHTML=h+'</div>';
+}
+
+// ── BOM 편집기 ──
+let BOM_EDITS={};   // Firebase /BOM_EDITS에서 로드한 신규/수정 품목
+let BOM_SEL=null;   // 현재 선택 품목코드
+let _ingItems=[];   // 편집 중인 원재료 배열
+
+function getBomMerged(){return Object.assign({},BOM_DATA,BOM_EDITS);}
+
+async function loadBomEdits(){
+  try{
+    const d=await fetch(FB+'/BOM_EDITS.json').then(r=>r.json());
+    BOM_EDITS=d||{};
+    // 기존 LOT 추적에도 반영
+    Object.assign(BOM_DATA,BOM_EDITS);
+  }catch(e){BOM_EDITS={};}
+  if(document.getElementById('bom-page').classList.contains('active'))renderBomList();
+}
+
+function renderBomList(){
+  const q=(document.getElementById('bom-search').value||'').trim().toLowerCase();
+  const all=getBomMerged();
+  const keys=Object.keys(all).sort((a,b)=>{
+    const an=BOM_EDITS[a]?0:1, bn=BOM_EDITS[b]?0:1;
+    if(an!==bn)return an-bn;
+    return a.localeCompare(b);
+  });
+  const filtered=keys.filter(k=>{
+    if(!q)return true;
+    const nm=(all[k][0]&&all[k][0].fpName)||'';
+    return k.toLowerCase().includes(q)||nm.toLowerCase().includes(q);
+  });
+  document.getElementById('bom-count').textContent=
+    '전체 '+keys.length+'개 품목 · 신규 '+Object.keys(BOM_EDITS).length+'개';
+  const list=document.getElementById('bom-list');
+  list.innerHTML='';
+  if(!filtered.length){list.innerHTML='<div class="empty">검색 결과 없음</div>';return;}
+  filtered.forEach(cd=>{
+    const items=all[cd]||[];
+    const fpNm=(items[0]&&items[0].fpName)||cd;
+    const isNew=!!BOM_EDITS[cd];
+    const div=document.createElement('div');
+    div.className='bom-item'+(isNew?' is-new':'')+(BOM_SEL===cd?' selected':'');
+    div.innerHTML='<div>'
+      +'<div class="bom-item-nm">'
+      +(isNew?'<span style="background:var(--amber-lt);color:var(--amber);font-size:10px;font-weight:700;padding:1px 5px;border-radius:3px;margin-right:5px">NEW</span>':'')
+      +fpNm+'</div>'
+      +'<div class="bom-item-cd">'+cd+' &middot; 원료 '+items.filter(i=>i.name).length+'개</div>'
+      +'</div>'
+      +'<span style="color:var(--g4)">›</span>';
+    div.onclick=()=>selectBomProduct(cd);
+    list.appendChild(div);
+  });
+}
+
+function selectBomProduct(cd){
+  BOM_SEL=cd;
+  renderBomList();
+  const all=getBomMerged();
+  const items=all[cd]?JSON.parse(JSON.stringify(all[cd])):[];
+  _ingItems=items;
+  const fpNm=(items[0]&&items[0].fpName)||'';
+  const isNew=!!BOM_EDITS[cd];
+  const right=document.getElementById('bom-right');
+  right.innerHTML=
+    '<div style="margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">'
+    +'<div>'
+    +'<div style="font-size:17px;font-weight:700;color:var(--navy)">'+fpNm+'</div>'
+    +'<div style="font-size:12px;color:var(--g4);margin-top:2px">'+cd
+    +(isNew?' &nbsp;·&nbsp; <span style="color:var(--amber);font-weight:700">신규 품목</span>':'')+'</div>'
+    +'</div>'
+    +(isNew?'<button class="btn btn-danger btn-sm" onclick="deleteBomProduct(\''+cd+'\')">삭제</button>':'')
+    +'</div>'
+    +'<div style="font-size:13px;font-weight:700;color:var(--navy2);margin-bottom:10px;border-bottom:2px solid var(--g2);padding-bottom:6px">'
+    +'원재료 구성 <span style="font-size:11px;color:var(--g4);font-weight:400">(원료 / 부재료 / 반제품)</span></div>'
+    +'<div id="ing-list"></div>'
+    +'<button class="btn btn-outline btn-sm" style="margin-top:10px;width:100%" onclick="addIngRow()">＋ 원재료 행 추가</button>'
+    +'<div style="margin-top:14px;display:flex;gap:8px">'
+    +'<button class="btn btn-success" style="flex:1" onclick="saveBomProduct(\''+cd+'\')">💾 저장</button>'
+    +'<button class="btn btn-outline" style="flex:1" onclick="selectBomProduct(\''+cd+'\')">↺ 초기화</button>'
+    +'</div>'
+    +'<div id="bom-save-msg" style="font-size:12px;text-align:center;margin-top:8px;min-height:16px"></div>';
+  renderIngList();
+}
+
+function renderIngList(){
+  const div=document.getElementById('ing-list');
+  if(!div)return;
+  div.innerHTML='';
+  if(!_ingItems.length){
+    div.innerHTML='<div style="color:var(--g4);font-size:13px;padding:14px 0;text-align:center">원재료가 없습니다. 아래 버튼으로 추가하세요.</div>';
+    return;
+  }
+  _ingItems.forEach((it,i)=>{
+    const row=document.createElement('div');
+    row.className='ing-row';
+    row.innerHTML='<select onchange="ingSet('+i+',\'gbn\',this.value)">'
+      +['원료','부재료','반제품'].map(g=>'<option value="'+g+'"'+(it.gbn===g?' selected':'')+'>'+g+'</option>').join('')
+      +'</select>'
+      +'<input type="text" placeholder="원재료명 (예: 자숙가리비30kg)" value="'+(it.name||'')+'" oninput="ingSet('+i+',\'name\',this.value)">'
+      +'<button class="btn btn-danger btn-sm" onclick="ingDel('+i+')">✕</button>';
+    div.appendChild(row);
+  });
+}
+
+function ingSet(i,f,v){if(_ingItems[i])_ingItems[i][f]=v;}
+function ingDel(i){_ingItems.splice(i,1);renderIngList();}
+function addIngRow(){
+  const fpNm=BOM_SEL?(getBomMerged()[BOM_SEL]||[{fpName:''}])[0].fpName||'':'';
+  _ingItems.push({gbn:'원료',name:'',fpName:fpNm});
+  renderIngList();
+  // 새 행의 input에 포커스
+  const rows=document.querySelectorAll('.ing-row');
+  if(rows.length){const inp=rows[rows.length-1].querySelector('input');if(inp)inp.focus();}
+}
+
+async function saveBomProduct(cd){
+  const valid=_ingItems.filter(it=>(it.name||'').trim());
+  if(!valid.length){alert('원재료를 1개 이상 입력해주세요.');return;}
+  const all=getBomMerged();
+  const fpNm=(all[cd]&&all[cd][0]&&all[cd][0].fpName)||cd;
+  const finalItems=valid.map(it=>({gbn:it.gbn,name:it.name.trim(),fpName:fpNm}));
+  const msg=document.getElementById('bom-save-msg');
+  msg.textContent='저장 중...';msg.style.color='var(--g4)';
+  try{
+    await fetch(FB+'/BOM_EDITS/'+encodeURIComponent(cd)+'.json',{
+      method:'PUT',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(finalItems)
+    });
+    BOM_EDITS[cd]=finalItems;
+    BOM_DATA[cd]=finalItems; // LOT 추적에도 즉시 반영
+    _ingItems=JSON.parse(JSON.stringify(finalItems));
+    msg.textContent='✅ 저장 완료';msg.style.color='var(--teal)';
+    renderBomList();
+    setTimeout(()=>{if(msg)msg.textContent='';},3000);
+  }catch(e){
+    msg.textContent='❌ 저장 실패: '+e.message;msg.style.color='var(--red)';
+  }
+}
+
+async function deleteBomProduct(cd){
+  if(!confirm('"'+cd+'" 신규 품목을 삭제하시겠습니까?'))return;
+  try{
+    await fetch(FB+'/BOM_EDITS/'+encodeURIComponent(cd)+'.json',{method:'DELETE'});
+    delete BOM_EDITS[cd];delete BOM_DATA[cd];
+    BOM_SEL=null;
+    document.getElementById('bom-right').innerHTML='<div class="bom-empty-rt">← 좌측에서 품목 선택 또는 신규 추가</div>';
+    renderBomList();
+  }catch(e){alert('삭제 실패: '+e.message);}
+}
+
+function openBomAddModal(){
+  document.getElementById('bom-new-cd').value='';
+  document.getElementById('bom-new-nm').value='';
+  document.getElementById('bom-modal-err').textContent='';
+  document.getElementById('bom-modal').style.display='flex';
+  setTimeout(()=>document.getElementById('bom-new-cd').focus(),80);
+}
+function closeBomAddModal(){document.getElementById('bom-modal').style.display='none';}
+function confirmBomAdd(){
+  const cd=document.getElementById('bom-new-cd').value.trim().toUpperCase();
+  const nm=document.getElementById('bom-new-nm').value.trim();
+  const err=document.getElementById('bom-modal-err');
+  if(!cd){err.textContent='품목코드를 입력하세요.';return;}
+  if(!nm){err.textContent='완제품명을 입력하세요.';return;}
+  if(!/^P-\d+$/.test(cd)){err.textContent='형식 오류: P-숫자 (예: P-576)';return;}
+  if(getBomMerged()[cd]){err.textContent=cd+' 코드가 이미 존재합니다.';return;}
+  // 임시 등록 (저장 전 상태 — 원재료 매핑 후 저장 필요)
+  BOM_EDITS[cd]=[{gbn:'원료',name:'',fpName:nm}];
+  closeBomAddModal();
+  renderBomList();
+  selectBomProduct(cd);
 }
 </script>
 </body>
