@@ -9,55 +9,51 @@
   --bg:#F4F6F9; --card:#FFF; --border:#DDE1E8;
   --primary:#0D5E9F; --primary-light:#E8F2FB;
   --accent:#0D8A72; --accent-light:#E8F7F4;
-  --red:#C0392B; --text:#1A2130; --sub:#6B7585;
+  --red:#C0392B; --amber:#C27A00; --amber-lt:#FEF3E0;
+  --text:#1A2130; --sub:#6B7585;
   --sp:#1E6FB5; --rm:#C27A00; --am:#6B4C9A; --sm:#2E7D5A;
   --radius:8px; --shadow:0 2px 10px rgba(0,0,0,.07);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'맑은 고딕',sans-serif;background:var(--bg);color:var(--text);font-size:13px;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
-
-/* 헤더 */
-.hd{background:var(--primary);color:#fff;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.18);}
-.hd h1{font-size:16px;font-weight:700;}
-.hd .sub{font-size:11px;opacity:.7;margin-top:1px;}
+.hd{background:var(--primary);color:#fff;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.18);}
+.hd h1{font-size:15px;font-weight:700;}
+.hd .sub{font-size:10px;opacity:.7;margin-top:1px;}
 .btn{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border-radius:6px;border:none;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;transition:all .15s;}
 .btn-primary{background:var(--accent);color:#fff;} .btn-primary:hover{background:#0a7260;}
 .btn-outline{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.5);} .btn-outline:hover{background:rgba(255,255,255,.1);}
 .btn-sm{padding:4px 10px;font-size:11px;border-radius:5px;}
 .btn-danger{background:var(--red);color:#fff;}
-
-/* 메인 3분할: 완제품 | 자재선택 | BOM결과 */
-.main{display:grid;grid-template-columns:256px 1fr 320px;gap:12px;padding:12px;flex:1;overflow:hidden;min-height:0;}
-
-/* 공통 패널 */
+.btn-amber{background:var(--amber);color:#fff;}
+.fb-status{display:flex;align-items:center;gap:6px;font-size:11px;opacity:.85;}
+.fb-dot{width:7px;height:7px;border-radius:50%;background:#aaa;flex-shrink:0;}
+.fb-dot.ok{background:#4caf50;}
+.fb-dot.err{background:#f44336;}
+.fb-dot.loading{background:#ff9800;animation:blink .7s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.main{display:grid;grid-template-columns:260px 1fr 310px;gap:10px;padding:10px;flex:1;overflow:hidden;min-height:0;}
 .panel{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;}
-.ph{padding:10px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.ph{padding:9px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .ph h2{font-size:12px;font-weight:700;color:var(--primary);}
 .pb{flex:1;overflow-y:auto;padding:8px;}
-
-/* 완제품 목록 */
-.fp-search{width:100%;padding:6px 9px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:12px;margin-bottom:7px;}
+.fp-search{width:100%;padding:6px 9px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:12px;margin-bottom:6px;}
 .fp-search:focus{outline:none;border-color:var(--primary);}
-.fp-item{padding:7px 9px;border-radius:6px;cursor:pointer;display:flex;align-items:center;gap:7px;border:1.5px solid transparent;margin-bottom:2px;transition:all .1s;}
+.fp-item{padding:7px 9px;border-radius:6px;cursor:pointer;display:flex;align-items:center;gap:6px;border:1.5px solid transparent;margin-bottom:2px;transition:all .1s;}
 .fp-item:hover{background:var(--primary-light);}
 .fp-item.sel{background:var(--primary-light);border-color:var(--primary);}
+.fp-item.is-new{background:#fffbea;}
 .fp-code{font-size:9px;color:var(--sub);font-weight:700;background:#EEF0F3;padding:2px 5px;border-radius:4px;flex-shrink:0;}
-.fp-name{font-size:11px;font-weight:500;line-height:1.3;}
-.fp-badge{font-size:10px;background:var(--accent);color:#fff;padding:1px 5px;border-radius:8px;margin-left:auto;flex-shrink:0;}
+.fp-name{font-size:11px;font-weight:500;line-height:1.3;flex:1;}
+.fp-badge{font-size:10px;background:var(--accent);color:#fff;padding:1px 5px;border-radius:8px;flex-shrink:0;}
 .cnt-chip{font-size:10px;background:#EEF0F3;padding:2px 7px;border-radius:10px;color:var(--sub);}
-
-/* 선택 완제품 표시 바 */
-.sel-bar{padding:9px 13px;border-bottom:1px solid var(--border);background:var(--primary-light);display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.new-badge{font-size:9px;background:var(--amber-lt);color:var(--amber);padding:1px 5px;border-radius:4px;font-weight:700;flex-shrink:0;}
+.sel-bar{padding:9px 12px;border-bottom:1px solid var(--border);background:var(--primary-light);display:flex;align-items:center;gap:10px;flex-shrink:0;}
 .sel-bar.empty{background:#F7F8FA;}
 .sel-bar .code-badge{background:var(--primary);color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:5px;flex-shrink:0;}
 .sel-bar .fp-title{font-size:13px;font-weight:700;color:var(--primary);}
-
-/* 자재 검색 */
-.mat-search-row{padding:8px 12px;border-bottom:1px solid var(--border);flex-shrink:0;display:flex;flex-direction:column;gap:7px;}
+.mat-search-row{padding:8px 12px;border-bottom:1px solid var(--border);flex-shrink:0;display:flex;flex-direction:column;gap:6px;}
 .mat-search{width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:12px;}
 .mat-search:focus{outline:none;border-color:var(--primary);}
-
-/* 구분 필터 토글 */
 .gbn-filters{display:flex;gap:5px;align-items:center;flex-wrap:wrap;}
 .gf-btn{padding:3px 10px;border-radius:10px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-family:inherit;font-size:11px;font-weight:600;color:var(--sub);transition:all .12s;}
 .gf-btn.on{color:#fff;border-color:transparent;}
@@ -66,16 +62,9 @@ body{font-family:'맑은 고딕',sans-serif;background:var(--bg);color:var(--tex
 .gf-btn[data-g="부재료"].on{background:var(--am);}
 .gf-btn[data-g="부자재"].on{background:var(--sm);}
 .match-info{font-size:10px;color:var(--sub);}
-
-/* 자재 목록 */
 .mat-list{flex:1;overflow-y:auto;padding:6px 12px;}
-
-/* 구분 헤더 */
-.gbn-hd{font-size:10px;font-weight:700;color:#fff;padding:3px 9px;border-radius:4px;margin:8px 0 4px;display:inline-block;}
-.gbn-hd.반제품{background:var(--sp);}
-.gbn-hd.원료{background:var(--rm);}
-.gbn-hd.부재료{background:var(--am);}
-.gbn-hd.부자재{background:var(--sm);}
+.gbn-hd{font-size:10px;font-weight:700;color:#fff;padding:3px 9px;border-radius:4px;display:inline-block;}
+.gbn-hd.반제품{background:var(--sp);} .gbn-hd.원료{background:var(--rm);} .gbn-hd.부재료{background:var(--am);} .gbn-hd.부자재{background:var(--sm);}
 .gbn-hd-row{display:flex;align-items:center;gap:8px;margin:8px 0 4px;}
 .gbn-hd-row .gbn-sel-btn{font-size:10px;background:none;border:1px solid;border-radius:4px;padding:2px 6px;cursor:pointer;font-family:inherit;font-weight:600;}
 .gbn-hd-row.반제품 .gbn-sel-btn{color:var(--sp);border-color:var(--sp);}
@@ -83,204 +72,262 @@ body{font-family:'맑은 고딕',sans-serif;background:var(--bg);color:var(--tex
 .gbn-hd-row.부재료 .gbn-sel-btn{color:var(--am);border-color:var(--am);}
 .gbn-hd-row.부자재 .gbn-sel-btn{color:var(--sm);border-color:var(--sm);}
 .gbn-cnt{font-size:10px;color:var(--sub);}
-
-/* 자재 아이템 */
 .mat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:3px;margin-bottom:4px;}
 .mi{display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:5px;cursor:pointer;border:1.5px solid transparent;transition:all .1s;user-select:none;}
-.mi:hover{background:#F4F6F9;}
-.mi.ck{background:var(--accent-light);border-color:var(--accent);}
+.mi:hover{background:#F4F6F9;} .mi.ck{background:var(--accent-light);border-color:var(--accent);}
 .mi input[type=checkbox]{width:13px;height:13px;accent-color:var(--accent);flex-shrink:0;cursor:pointer;}
 .mi label{font-size:11px;cursor:pointer;line-height:1.3;}
 .mat-empty{padding:20px;text-align:center;color:var(--sub);font-size:12px;}
-
-/* BOM 결과 패널 */
-.bom-panel{display:flex;flex-direction:column;overflow:hidden;}
-.bom-fp-header{padding:10px 13px;background:var(--primary-light);border-bottom:1px solid var(--border);flex-shrink:0;}
+.bom-fp-header{padding:9px 12px;background:var(--primary-light);border-bottom:1px solid var(--border);flex-shrink:0;}
 .bom-fp-header .code{font-size:10px;font-weight:700;background:var(--primary);color:#fff;padding:2px 7px;border-radius:4px;margin-right:6px;}
 .bom-fp-header .nm{font-size:12px;font-weight:700;color:var(--primary);}
 .bom-fp-header.empty .nm{color:var(--sub);font-weight:400;}
 .bom-list{flex:1;overflow-y:auto;padding:8px;}
 .bom-item{display:flex;align-items:center;gap:7px;padding:5px 8px;border-radius:6px;border-bottom:1px solid var(--border);margin-bottom:2px;}
-.bom-item:last-child{border-bottom:none;}
-.bom-item:hover{background:#F7F8FA;}
+.bom-item:last-child{border-bottom:none;} .bom-item:hover{background:#F7F8FA;}
 .tag{display:inline-block;padding:2px 6px;border-radius:4px;font-size:9px;font-weight:700;color:#fff;flex-shrink:0;}
-.tag.반제품{background:var(--sp);}
-.tag.원료{background:var(--rm);}
-.tag.부재료{background:var(--am);}
-.tag.부자재{background:var(--sm);}
+.tag.반제품{background:var(--sp);} .tag.원료{background:var(--rm);} .tag.부재료{background:var(--am);} .tag.부자재{background:var(--sm);}
 .bom-name{font-size:11px;flex:1;}
 .del-btn{background:none;border:none;cursor:pointer;color:var(--sub);font-size:13px;padding:2px 5px;border-radius:4px;flex-shrink:0;}
 .del-btn:hover{background:#FFE8E6;color:var(--red);}
 .bom-empty{padding:20px;text-align:center;color:var(--sub);font-size:11px;}
-.bom-footer{padding:8px 13px;border-top:1px solid var(--border);display:flex;gap:6px;flex-shrink:0;}
-
-/* 하단 액션바 */
-.action-bar{background:var(--card);border-top:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;gap:10px;justify-content:space-between;flex-shrink:0;}
-.stats{font-size:11px;color:var(--sub);}
-.stats strong{color:var(--text);}
-
-::-webkit-scrollbar{width:4px;height:4px;}
-::-webkit-scrollbar-thumb{background:#CBD0D8;border-radius:3px;}
-
+.bom-footer{padding:8px 12px;border-top:1px solid var(--border);display:flex;gap:6px;flex-shrink:0;}
+.action-bar{background:var(--card);border-top:1px solid var(--border);padding:7px 16px;display:flex;align-items:center;gap:10px;justify-content:space-between;flex-shrink:0;}
+.stats{font-size:11px;color:var(--sub);} .stats strong{color:var(--text);}
+::-webkit-scrollbar{width:4px;height:4px;} ::-webkit-scrollbar-thumb{background:#CBD0D8;border-radius:3px;}
 .toast{position:fixed;bottom:20px;right:20px;background:#1A2130;color:#fff;padding:9px 16px;border-radius:8px;font-size:12px;opacity:0;transform:translateY(6px);transition:all .2s;pointer-events:none;z-index:999;}
 .toast.show{opacity:1;transform:translateY(0);}
-
-/* 모달 */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;z-index:100;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:100;}
 .modal-overlay.open{display:flex;}
-.modal{background:var(--card);border-radius:10px;width:720px;max-height:80vh;display:flex;flex-direction:column;box-shadow:0 8px 32px rgba(0,0,0,.2);}
-.modal-head{padding:13px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.modal{background:var(--card);border-radius:10px;display:flex;flex-direction:column;box-shadow:0 8px 32px rgba(0,0,0,.22);}
+.modal-head{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
 .modal-head h3{font-size:14px;font-weight:700;}
-.modal-body{flex:1;overflow-y:auto;padding:14px;}
+.modal-body{flex:1;overflow-y:auto;padding:16px;}
 .close-btn{background:none;border:none;font-size:18px;cursor:pointer;color:var(--sub);}
+.form-row{margin-bottom:14px;}
+.form-row label{display:block;font-size:11px;font-weight:700;color:var(--sub);margin-bottom:5px;}
+.form-row input{width:100%;padding:8px 11px;border:1.5px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;outline:none;}
+.form-row input:focus{border-color:var(--primary);}
+.form-err{color:var(--red);font-size:11px;margin-top:8px;min-height:16px;text-align:center;}
+.form-btns{display:flex;gap:8px;margin-top:4px;}
+.form-btns .btn{flex:1;justify-content:center;}
 </style>
 </head>
 <body>
-
-<!-- 헤더 -->
 <div class="hd">
   <div>
     <h1>㈜위드프레쉬  BOM 매핑 편집기</h1>
-    <div class="sub">완제품별 원료·반제품·부재료·부자재 구성 등록</div>
+    <div class="sub">완제품별 원료·반제품·부재료 구성 등록 → Firebase ERP 자동 연동</div>
   </div>
-  <div style="display:flex;gap:7px">
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="fb-status"><div class="fb-dot loading" id="fbDot"></div><span id="fbMsg">연결 중...</span></div>
     <button class="btn btn-outline" onclick="openAllBom()">📋 전체 BOM 보기</button>
-    <button class="btn btn-outline" onclick="exportJSON()">💾 JSON 저장</button>
-    <button class="btn btn-primary" onclick="exportExcel()">📊 Excel 내보내기</button>
+    <button class="btn btn-outline" onclick="exportCSV()">📊 CSV 내보내기</button>
   </div>
 </div>
-
-<!-- 메인 3열 -->
 <div class="main">
-
   <!-- ① 완제품 목록 -->
   <div class="panel">
     <div class="ph">
       <h2>완제품 목록</h2>
-      <span class="cnt-chip" id="fpCount">133</span>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span class="cnt-chip" id="fpCount">0</span>
+        <button class="btn btn-sm btn-amber" onclick="openAddFpModal()">＋ 신규</button>
+      </div>
     </div>
     <div class="pb">
-      <input class="fp-search" id="fpSearch" placeholder="🔍 완제품명 검색..." oninput="filterFP()">
+      <button class="btn btn-amber" style="width:100%;justify-content:center;margin-bottom:8px;font-size:12px" onclick="openAddFpModal()">＋ 신규 완제품 추가</button>
+      <input class="fp-search" id="fpSearch" placeholder="🔍 완제품명 / 코드 검색..." oninput="filterFP()">
       <div id="fpList"></div>
     </div>
   </div>
-
-  <!-- ② 자재 선택 (통합) -->
+  <!-- ② 자재 선택 -->
   <div class="panel" style="display:flex;flex-direction:column;overflow:hidden;">
-    <!-- 선택된 완제품 표시 -->
     <div class="sel-bar empty" id="selBar">
       <span style="color:var(--sub);font-size:12px">← 왼쪽에서 완제품을 선택하세요</span>
     </div>
-    <!-- 검색 + 구분 필터 -->
     <div class="mat-search-row">
       <input class="mat-search" id="matSearch" placeholder="🔍 자재명 검색 (예: 오징어, 꽃게, 가리비...)" oninput="renderMatList()">
       <div style="display:flex;align-items:center;justify-content:space-between;">
         <div class="gbn-filters">
           <span style="font-size:10px;color:var(--sub);margin-right:2px">구분:</span>
-          <button class="gf-btn on" data-g="반제품" onclick="toggleGbn(this)">반제품 <span id="gcnt-반제품">67</span></button>
-          <button class="gf-btn on" data-g="원료" onclick="toggleGbn(this)">원료 <span id="gcnt-원료">100</span></button>
-          <button class="gf-btn on" data-g="부재료" onclick="toggleGbn(this)">부재료 <span id="gcnt-부재료">2</span></button>
+          <button class="gf-btn on" data-g="반제품" onclick="toggleGbn(this)">반제품 <span id="gcnt-반제품">0</span></button>
+          <button class="gf-btn on" data-g="원료" onclick="toggleGbn(this)">원료 <span id="gcnt-원료">0</span></button>
+          <button class="gf-btn on" data-g="부재료" onclick="toggleGbn(this)">부재료 <span id="gcnt-부재료">0</span></button>
           <button class="gf-btn on" data-g="부자재" onclick="toggleGbn(this)">부자재 <span id="gcnt-부자재">0</span></button>
         </div>
         <span class="match-info" id="matchInfo"></span>
       </div>
     </div>
-    <!-- 자재 목록 -->
     <div class="mat-list" id="matList">
       <div class="mat-empty">← 완제품을 선택하면 자재 목록이 표시됩니다</div>
     </div>
   </div>
-
   <!-- ③ BOM 결과 -->
-  <div class="panel bom-panel">
+  <div class="panel" style="display:flex;flex-direction:column;overflow:hidden;">
     <div class="ph"><h2>BOM 구성</h2><span class="cnt-chip" id="bomCount"></span></div>
-    <div class="bom-fp-header empty" id="bomFpHeader">
-      <span class="nm">완제품을 선택하세요</span>
-    </div>
-    <div class="bom-list" id="bomList">
-      <div class="bom-empty">선택된 자재가 없습니다</div>
-    </div>
+    <div class="bom-fp-header empty" id="bomFpHeader"><span class="nm">완제품을 선택하세요</span></div>
+    <div class="bom-list" id="bomList"><div class="bom-empty">선택된 자재가 없습니다</div></div>
     <div class="bom-footer">
       <button class="btn btn-sm btn-danger" onclick="clearCurrentBom()" style="flex:1">초기화</button>
-      <button class="btn btn-sm btn-primary" onclick="saveCurrent()" style="flex:1">✔ 저장</button>
+      <button class="btn btn-sm btn-primary" id="saveBtn" onclick="saveCurrent()" style="flex:1.8">💾 저장 → ERP 전송</button>
     </div>
   </div>
-
 </div>
-
-<!-- 하단 -->
 <div class="action-bar">
   <div class="stats" id="globalStats">전체 BOM 등록: <strong>0</strong>개 완제품, <strong>0</strong>개 자재 매핑</div>
+  <div style="font-size:11px;color:var(--sub)" id="saveStatus"></div>
 </div>
-
 <div class="toast" id="toast"></div>
+
+<!-- 신규 완제품 추가 모달 -->
+<div class="modal-overlay" id="addFpModal" onclick="if(event.target===this)closeAddFp()">
+  <div class="modal" style="width:380px">
+    <div class="modal-head"><h3>＋ 신규 완제품 추가</h3><button class="close-btn" onclick="closeAddFp()">×</button></div>
+    <div class="modal-body">
+      <div class="form-row">
+        <label>품목코드 <span style="color:#999;font-weight:400">(예: P-576)</span></label>
+        <input type="text" id="newFpCode" placeholder="P-XXX" onkeydown="if(event.key==='Enter')document.getElementById('newFpName').focus()">
+      </div>
+      <div class="form-row">
+        <label>완제품명</label>
+        <input type="text" id="newFpName" placeholder="예: 손질병어300g" onkeydown="if(event.key==='Enter')confirmAddFp()">
+      </div>
+      <div class="form-err" id="addFpErr"></div>
+      <div class="form-btns">
+        <button class="btn btn-primary" onclick="confirmAddFp()">추가 →</button>
+        <button class="btn" style="background:#eee;color:var(--text)" onclick="closeAddFp()">취소</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- 전체 BOM 모달 -->
 <div class="modal-overlay" id="allBomModal" onclick="if(event.target===this)closeModal()">
-  <div class="modal">
-    <div class="modal-head">
-      <h3>📋 전체 BOM 현황</h3>
-      <button class="close-btn" onclick="closeModal()">×</button>
-    </div>
+  <div class="modal" style="width:740px;max-height:82vh;">
+    <div class="modal-head"><h3>📋 전체 BOM 현황</h3><button class="close-btn" onclick="closeModal()">×</button></div>
     <div class="modal-body" id="allBomBody"></div>
   </div>
 </div>
 
 <script>
-// ══════════════════════════════════════════
-// 기준 데이터
-// ══════════════════════════════════════════
-const FG = [
-  {code:"P-001",name:"가리비500g"},{code:"P-002",name:"곰곰_간장게장2.5kg"},{code:"P-003",name:"씨케이_양념게장600g"},{code:"P-004",name:"절단꽃게알배기700g"},{code:"P-005",name:"손질꽃게4절900g(경량)"},{code:"P-006",name:"참돔500g"},{code:"P-007",name:"자숙홍합10kg"},{code:"P-008",name:"자숙홍합1kg"},{code:"P-009",name:"손질통오징어320g(국내산)"},{code:"P-010",name:"참돔400g"},{code:"P-011",name:"참돔300g"},{code:"P-012",name:"참돔200g"},{code:"P-013",name:"손질꽃게4절500g"},{code:"P-014",name:"메가마트_간장게장500g"},{code:"P-015",name:"메가마트_양념게장300g"},{code:"P-016",name:"손질꽃게500g"},{code:"P-101",name:"위플_국내산간장게장1.2KG"},{code:"P-102",name:"위플_국내산양념게장500G"},{code:"P-544",name:"손질박대3미"},{code:"P-103",name:"위플_절단꽃게1KG"},{code:"P-104",name:"위플_새우젓1.5kg"},{code:"P-105",name:"씨케이_살이꽉찬간장게장1.4KG"},{code:"P-106",name:"씨케이_국내산양념게장600g"},{code:"P-107",name:"씨케이_간장게장500g"},{code:"P-108",name:"씨케이_양념게장350g"},{code:"P-109",name:"도로블이_국내산양념게장600g"},{code:"P-110",name:"도로블이_알배기간장게장1.4KG"},{code:"P-111",name:"도로블이_블랙타이거새우500g"},{code:"P-112",name:"제철밥상_절단꽃게1KG"},{code:"P-113",name:"제철밥상_알배기꽃게500g"},{code:"P-114",name:"수산어보_양념게장500g"},{code:"P-115",name:"대명수산_손질꽃게1kg"},{code:"P-116",name:"메가마트_한입금게장(간장)500g"},{code:"P-117",name:"메가마트_한입금게장(양념)300g"},{code:"P-118",name:"곰곰_손질꽃게500g"},{code:"P-119",name:"곰곰_손질꽃게1KG"},{code:"P-120",name:"곰곰_간장게장1.8KG"},{code:"P-121",name:"곰곰_간장게장(냉장)2.5kg"},{code:"P-122",name:"곰곰_양념게장(냉장)1kg"},{code:"P-123",name:"두레생협_절단알배기꽃게700g"},{code:"P-124",name:"두레생협_손질꽃게700g"},{code:"P-201",name:"메가마트_손질갑오징어5kg"},{code:"P-202",name:"곰곰_데친문어(냉장)400g"},{code:"P-203",name:"곰곰_손질오징어250g"},{code:"P-204",name:"곰곰_손질오징어600g"},{code:"P-205",name:"손질통오징어320g(원양산)"},{code:"P-206",name:"삼천포상회_마른오징어100g"},{code:"P-207",name:"삼천포상회_반건오징어180g"},{code:"P-208",name:"두레생협_데친문어(냉장)300g"},{code:"P-209",name:"서풍_국산손질오징어(냉장)220g"},{code:"P-301",name:"노르웨이고등어1kg"},{code:"P-302",name:"OSF_모로코산절단갈치1kg"},{code:"P-401",name:"위플_자숙가리비살500g"},{code:"P-402",name:"메가마트_전복장(수출)300g"},{code:"P-403",name:"메가마트_간장가리비(수출)350g"},{code:"P-404",name:"메가마트_양념가리비(수출)350g"},{code:"P-405",name:"곰곰_생굴500g"},{code:"P-406",name:"두레생협_손질가리비150g"},{code:"P-407",name:"자숙홍합10kg"},{code:"P-501",name:"갑오징어200g"},{code:"P-502",name:"갑오징어500g"},{code:"P-503",name:"간장게장세트박스"},{code:"P-504",name:"민어탕EA"},{code:"P-505",name:"굴비250g6미"},{code:"P-506",name:"굴비3미EA"},{code:"P-507",name:"새우젓350g"},{code:"P-508",name:"김순덕간장순살게장100g"},{code:"P-509",name:"김순덕양념순살게장100g"},{code:"P-510",name:"갈치300g13팩박스"},{code:"P-511",name:"손질갈치300g"},{code:"P-512",name:"손질갈치300g"},{code:"P-513",name:"절단꽃게300g"},{code:"P-514",name:"경양손질꽃게4절1kg"},{code:"P-515",name:"알배기간장게장800g"},{code:"P-516",name:"부세(수출용)EA"},{code:"P-517",name:"조기(수출용)EA"},{code:"P-518",name:"갈치(수출용)EA"},{code:"P-519",name:"고등어(수출용)EA"},{code:"P-520",name:"가자미(수출용)EA"},{code:"P-521",name:"순살간장가리비350g"},{code:"P-522",name:"백조기2kg"},{code:"P-523",name:"손질가자미200g13팩EA"},{code:"P-524",name:"손질가자미200g"},{code:"P-525",name:"대하130g"},{code:"P-526",name:"대하180g"},{code:"P-527",name:"대하300g"},{code:"P-528",name:"민어스테이크300g"},{code:"P-529",name:"양념게장350g"},{code:"P-530",name:"오만둥이700g"},{code:"P-531",name:"왕손질가리비100g7팩"},{code:"P-532",name:"갑오징어2kg(12-14팩)"},{code:"P-533",name:"왕손질가리비100g7팩+가리비장1"},{code:"P-534",name:"손질갈치300g7팩"},{code:"P-535",name:"손질갈치250g12팩"},{code:"P-536",name:"손질갈치240g13팩"},{code:"P-537",name:"자연산참돔400g대4미"},{code:"P-538",name:"자연산참돔300g1미7팩"},{code:"P-539",name:"자연산참돔200g1미"},{code:"P-540",name:"자연산참돔300g2미7팩"},{code:"P-541",name:"자연산참돔400g1미5팩"},{code:"P-542",name:"왕손질가리비100g"},{code:"P-543",name:"굴비500g"},{code:"P-545",name:"손질멍게120g"},{code:"P-546",name:"냉동굴350g"},{code:"P-547",name:"원양산손질오징어(할복)250g"},{code:"P-548",name:"반건조오징어2마리"},{code:"P-549",name:"원양산손질오징어(할복)500g"},{code:"P-550",name:"자연산참돔200g11미"},{code:"P-551",name:"손질문어150g"},{code:"P-552",name:"자연산참돔450g1미"},{code:"P-553",name:"참돔600G"},{code:"P-554",name:"순살가리비100g"},{code:"P-555",name:"손질가리비100g"},{code:"P-556",name:"손질가자미200g14팩"},{code:"P-557",name:"손질가자미200g10팩"},{code:"P-558",name:"갑오징어150g"},{code:"P-559",name:"병어500g"},{code:"P-560",name:"알배기간장게장1.5kg"},{code:"P-561",name:"냉동굴1kg"},{code:"P-562",name:"손질대구400g"},{code:"P-563",name:"손질가자미400g"},{code:"P-564",name:"민어스테이크400g"},{code:"P-565",name:"황게(4절)500g"},{code:"P-566",name:"황게(2절)500g"},{code:"P-567",name:"손질가자미200g15팩"},{code:"P-568",name:"자숙가리비500g"},{code:"P-569",name:"갑오징어250g"},{code:"P-570",name:"새우젓500g"},{code:"P-571",name:"알배기간장게장500g"},{code:"P-572",name:"손질가자미500g"},{code:"P-573",name:"대서양붉은볼락220g"},{code:"P-574",name:"반건조민어300g"},{code:"P-575",name:"참조기 120g(2미)"}
+const FB = 'https://widfresh-erplot-default-rtdb.asia-southeast1.firebasedatabase.app';
+
+const FG_BASE = [
+  {code:"P-001",name:"가리비500g"},{code:"P-002",name:"곰곰_간장게장2.5kg"},{code:"P-003",name:"씨케이_양념게장600g"},{code:"P-004",name:"절단꽃게알배기700g"},{code:"P-005",name:"손질꽃게4절900g(경량)"},{code:"P-006",name:"참돔500g"},{code:"P-007",name:"자숙홍합10kg"},{code:"P-008",name:"자숙홍합1kg"},{code:"P-009",name:"손질통오징어320g(국내산)"},{code:"P-010",name:"참돔400g"},{code:"P-011",name:"참돔300g"},{code:"P-012",name:"참돔200g"},{code:"P-013",name:"손질꽃게4절500g"},{code:"P-014",name:"메가마트_간장게장500g"},{code:"P-015",name:"메가마트_양념게장300g"},{code:"P-016",name:"손질꽃게500g"},
+  {code:"P-101",name:"위플_국내산간장게장1.2KG"},{code:"P-102",name:"위플_국내산양념게장500G"},{code:"P-103",name:"위플_절단꽃게1KG"},{code:"P-104",name:"위플_새우젓1.5kg"},{code:"P-105",name:"씨케이_살이꽉찬간장게장1.4KG"},{code:"P-106",name:"씨케이_국내산양념게장600g"},{code:"P-107",name:"씨케이_간장게장500g"},{code:"P-108",name:"씨케이_양념게장350g"},{code:"P-109",name:"도로블이_국내산양념게장600g"},{code:"P-110",name:"도로블이_알배기간장게장1.4KG"},{code:"P-111",name:"도로블이_블랙타이거새우500g"},{code:"P-112",name:"제철밥상_절단꽃게1KG"},{code:"P-113",name:"제철밥상_알배기꽃게500g"},{code:"P-114",name:"수산어보_양념게장500g"},{code:"P-115",name:"대명수산_손질꽃게1kg"},{code:"P-116",name:"메가마트_한입금게장(간장)500g"},{code:"P-117",name:"메가마트_한입금게장(양념)300g"},{code:"P-118",name:"곰곰_손질꽃게500g"},{code:"P-119",name:"곰곰_손질꽃게1KG"},{code:"P-120",name:"곰곰_간장게장1.8KG"},{code:"P-121",name:"곰곰_간장게장(냉장)2.5kg"},{code:"P-122",name:"곰곰_양념게장(냉장)1kg"},{code:"P-123",name:"두레생협_절단알배기꽃게700g"},{code:"P-124",name:"두레생협_손질꽃게700g"},
+  {code:"P-201",name:"메가마트_손질갑오징어5kg"},{code:"P-202",name:"곰곰_데친문어(냉장)400g"},{code:"P-203",name:"곰곰_손질오징어250g"},{code:"P-204",name:"곰곰_손질오징어600g"},{code:"P-205",name:"손질통오징어320g(원양산)"},{code:"P-206",name:"삼천포상회_마른오징어100g"},{code:"P-207",name:"삼천포상회_반건오징어180g"},{code:"P-208",name:"두레생협_데친문어(냉장)300g"},{code:"P-209",name:"서풍_국산손질오징어(냉장)220g"},
+  {code:"P-301",name:"노르웨이고등어1kg"},{code:"P-302",name:"OSF_모로코산절단갈치1kg"},
+  {code:"P-401",name:"위플_자숙가리비살500g"},{code:"P-402",name:"메가마트_전복장(수출)300g"},{code:"P-403",name:"메가마트_간장가리비(수출)350g"},{code:"P-404",name:"메가마트_양념가리비(수출)350g"},{code:"P-405",name:"곰곰_생굴500g"},{code:"P-406",name:"두레생협_손질가리비150g"},{code:"P-407",name:"자숙홍합10kg"},
+  {code:"P-501",name:"갑오징어200g"},{code:"P-502",name:"갑오징어500g"},{code:"P-503",name:"간장게장세트박스"},{code:"P-504",name:"민어탱EA"},{code:"P-505",name:"굴비250g6미"},{code:"P-506",name:"굴비3미EA"},{code:"P-507",name:"새우장350g"},{code:"P-508",name:"김순덕간장순살게장100g"},{code:"P-509",name:"김순덕양념순살게장100g"},{code:"P-510",name:"갈치300g13팩박스"},{code:"P-511",name:"손질갈치300g"},{code:"P-512",name:"손질갈치300g"},{code:"P-513",name:"절단꽃게300g"},{code:"P-514",name:"경양손질꽃게4절1kg"},{code:"P-515",name:"알배기간장게장800g"},{code:"P-516",name:"부세(수출용)EA"},{code:"P-517",name:"조기(수출용)EA"},{code:"P-518",name:"갈치(수출용)EA"},{code:"P-519",name:"고등어(수출용)EA"},{code:"P-520",name:"가자미(수출용)EA"},{code:"P-521",name:"순살간장가리비350g"},{code:"P-522",name:"백조기2kg"},{code:"P-523",name:"손질가자미200g13팩EA"},{code:"P-524",name:"손질가자미200g"},{code:"P-525",name:"대하130g"},{code:"P-526",name:"대하180g"},{code:"P-527",name:"대하300g"},{code:"P-528",name:"민어스테이크300g"},{code:"P-529",name:"양념게장350g"},{code:"P-530",name:"오만둥이700g"},{code:"P-531",name:"왕손질가리비100g7팩"},{code:"P-532",name:"갑오징어2kg(12-14팩)"},{code:"P-533",name:"왕손질가리비100g7팩+가리비장1"},{code:"P-534",name:"손질갈치300g7팩"},{code:"P-535",name:"손질갈치250g12팩"},{code:"P-536",name:"손질갈치240g13팩"},{code:"P-537",name:"자연산참돔400g도4미"},{code:"P-538",name:"자연산참돔300g1미7팩"},{code:"P-539",name:"자연산참돔200g1미"},{code:"P-540",name:"자연산참돔300g2미7팩"},{code:"P-541",name:"자연산참돔400g1미5팩"},{code:"P-542",name:"왕손질가리비100g"},{code:"P-543",name:"굴비500g"},{code:"P-544",name:"손질박대3미"},{code:"P-545",name:"손질멍게120g"},{code:"P-546",name:"냉동굴350g"},{code:"P-547",name:"원양산손질오징어(할복)250g"},{code:"P-548",name:"반건조오징어2마리"},{code:"P-549",name:"원양산손질오징어(할복)500g"},{code:"P-550",name:"자연산참돔200g11미"},{code:"P-551",name:"손질문어150g"},{code:"P-552",name:"자연산참돔450g1미"},{code:"P-553",name:"참돔600G"},{code:"P-554",name:"순살가리비100g"},{code:"P-555",name:"손질가리비100g"},{code:"P-556",name:"손질가자미200g14팩"},{code:"P-557",name:"손질가자미200g10팩"},{code:"P-558",name:"갑오징어150g"},{code:"P-559",name:"병어500g"},{code:"P-560",name:"알배기간장게장1.5kg"},{code:"P-561",name:"냉동굴1kg"},{code:"P-562",name:"손질대구400g"},{code:"P-563",name:"손질가자미400g"},{code:"P-564",name:"민어스테이크400g"},{code:"P-565",name:"황게(4절)500g"},{code:"P-566",name:"황게(2절)500g"},{code:"P-567",name:"손질가자미200g15팩"},{code:"P-568",name:"자숙가리비500g"},{code:"P-569",name:"갑오징어250g"},{code:"P-570",name:"새우장500g"},{code:"P-571",name:"알배기간장게장500g"},{code:"P-572",name:"손질가자미500g"},{code:"P-573",name:"대서양붉은볼락220g"},{code:"P-574",name:"반건조민어300g"},{code:"P-575",name:"참조기 120g(2미)"}
 ];
+
 const MAT = {
-  반제품:["자숙가리비30kg","자숙가리비20kg","자숙가리비소30kg","절단꽃게알배기10kg","냉동굴10kg","냉동굴30kg","절단꽃게(벌크)KG","손질꽃게KG","알배기(선별)카고","갑오징어(소)카고","갑오징어(중)카고","갑오징어(대)카고","갑오징어(무선별)카고","손질오징어(벌크)팬","생가리비(탈피)카고","자숙가리비카고","새우반죽(전분)팬","간장소스KG","양념소스KG","생가리비10kg","생가리비20kg","생가리비30kg","갑오징어150g↑30kg","갑오징어150g↓30kg","자숙홍합kg","자숙가리비10kg","백조기진공30kg","반건조오징어1.2kg","마른오징어","가자미무선별30kg","참돔무선별30kg","손질꽃게10kg","간장게장500G","양념게장350g","갑오징어200g↑","손질통오징어320g(국내산)반제품","원양산손질오징어(할복)250g↑(벌크)","원양산손질오징어(할복)250g↓(벌크)","냉동멍게1.2kg","갑오징어6kg","손질대구30kg","갑오징어 100g↓30kg","갑오지어소30kg","갑오징어150/200 30kg","갑오징어200/250 30kg","손질가자미(100/200)30kg","참돔(300/400)30kg","갑오징어 200g↑10kg","가자미(80/120)30kg","참돔300g4+400g4","참돔300g2미","참돔400g","참돔500g↑30kg","참돔(200/300)30kg","참돔(400/500)30kg","가자미(중)30kg","원양산손질오징어(할복)무선별30kg","오징어(원양산)다리6kg","오징어(원양산)몸통6kg","민어필렛30kg","갑오징어250g↑","원양산손질오징어(할복)무선별kg","참돔300g","손질통오징어320g(원양산)","오징어(국내산)20kg","손질민어小7kg","손질통오징어320g(원양산)반제품"],
-  원료:["참돔20kg","생굴20kg","손질서대180g","원양산오징어(M)20kg","원양산오징어(M2)20kg","꽃게10KG","꽃게25KG","꽃게30KG","꽃게40KG","황게10KG","새우10KG","중하(백새우)15KG","블랙타이거새우0.5K","생칵테일새우0.9kg","갑오징어25KG","한치20KG","한치25KG","원양산오징어20KG","가자미12KG","가자미16KG","가자미21KG","갈치10KG","꽃돔(황돔)15KG","꽃돔(황돔)20KG","참돔15KG","민어21KG","백조기20KG","병어25KG","송어20kg","가리비원료10kg","가리비살KG","홍합10KG","홍합15KG","새우젓25KG","황돔200/30030kg","민어뱃살30kg","병어대30kg","병어80↓30kg","황돔소30kg","얼룩새우500g","돔600g↑30kg","민어65미25kg","오징어(국산)3단25kg","오만둥이7kg","황돔300/400EA","가자미무선별30kg","가자미소30kg","대구30kg","대구머리30kg","갑오징어23kg","갑오징어5단25kg","문어대25kg","새우젓kg","동결패각가리비10kg","병어소30kg","병어소10kg","하동우렁이1kg","절단대구30kg","황돔30kg","갈치20kg","병어소25kg","병어소35kg","가자미600↑30kg","갑오징어소10kg","황돔100/20030kg","황돔200↓30kg","백새우25kg","냉동옥돔16kg","대하10kg","대하25kg","오다리X10kg","오다리O10kg","오징어(국산)25kg","굴비70/8030kg","꽃게수30kg","문어","냉동멍게","갑오징어4단25kg","문어(선별)10KG","오징어(국산)몸통6kg","오징어(국산)다리6kg","참돔400g30kg","멍게10kg","가자미21kg","대구10kg","오징어(국산) 23kg","꼬막살800g","참돔15kg","오징어(국산)3단21.3kg","오징어(국산)2단23kg","꽃게44KG","꽃게kg","대서양붉은볼락4kg","참돔5단20kg","참돔4단20kg","참돔3단20kg","참돔6단20kg","민어3단25kg","민어4단25kg","민어중25kg"],
+  반제품:["자숙가리비30kg","자숙가리비20kg","자숙가리비소30kg","절단꽃게알배기10kg","냉동굴10kg","냉동굴30kg","절단꽃게(벌크)KG","손질꽃게KG","알배기(선별)카고","갑오징어(소)카고","갑오징어(중)카고","갑오징어(대)카고","갑오징어(무선별)카고","손질오징어(벌크)팬","생가리비(탈피)카고","자숙가리비카고","새우반죽(전분)팬","간장소스KG","양념소스KG","생가리비10kg","생가리비20kg","생가리비30kg","갑오징어150g↑30kg","갑오징어150g↓30kg","자숙홍합kg","자숙가리비10kg","백조기진공30kg","반건조오징어1.2kg","마른오징어","가자미무선별30kg","참돔무선별30kg","손질꽃게10kg","간장게장500G","양념게장350g","갑오징어200g↑","손질통오징어320g(국내산)반제품","원양산손질오징어(할복)250g↑(벌크)","원양산손질오징어(할복)250g↓(벌크)","냉동멍게1.2kg","갑오징어6kg","손질대구30kg","갑오징어 100g↓30kg","갑오진어소30kg","갑오징어150/200 30kg","갑오징어200/250 30kg","손질가자미(100/200)30kg","참돔(300/400)30kg","갑오징어 200g↑10kg","가자미(80/120)30kg","참돔300g4+400g4","참돔300g2미","참돔400g","참돔500g↑30kg","참돔(200/300)30kg","참돔(400/500)30kg","가자미(중)30kg","원양산손질오징어(할복)무선별30kg","오징어(원양산)다리6kg","오징어(원양산)몸통6kg","민어필렛30kg","갑오징어250g↑","원양산손질오징어(할복)무선별kg","참돔300g","손질통오징어320g(원양산)","오징어(국내산)20kg","손질민어小7kg","손질통오징어320g(원양산)반제품"],
+  원료:["참돔20kg","생굴20kg","손질서대180g","원양산오징어(M)20kg","원양산오징어(M2)20kg","꽃게10KG","꽃게25KG","꽃게30KG","꽃게40KG","황게10KG","새우10KG","중하(백새우)15KG","블랙타이거새우0.5K","생켈테일새우0.9kg","갑오징어25KG","한치20KG","한치25KG","원양산오징어20KG","가자미12KG","가자미16KG","가자미21KG","갈치10KG","꽃돔(황돔)15KG","꽃돔(황돔)20KG","참돔15KG","민어21KG","백조기20KG","병어25KG","송어20kg","가리비원료10kg","가리비살KG","홍합10KG","홍합15KG","새우장25KG","황돔200/30030kg","민어바닥30kg","병어도30kg","병어80↑30kg","황돔소30kg","얼룩새우500g","돔600g↑30kg","민어65미25kg","오징어(국산)3년25kg","오만둥이7kg","황돔300/400EA","가자미무선별30kg","가자미소30kg","대구30kg","대구머리30kg","갑오징어23kg","갑오징어5년25kg","문어30kg","새우장kg","동결팩각가리비10kg","병어소30kg","병어소10kg","하동우럭장1kg","절단대구30kg","황돔30kg","갈치20kg","병어소25kg","병어소35kg","가자미600↑30kg","갑오징어소10kg","황돔100/20030kg","황돔200↑30kg","백새우25kg","냉동육돔16kg","대하10kg","대하25kg","오다리X10kg","오다리O10kg","오징어(국산)25kg","굴비70/8030kg","꽃게씨30kg","문어","냉동멍게","갑오징어4년25kg","문어(선별)10KG","오징어(국산)몸통6kg","오징어(국산)다리6kg","참돔400g30kg","멍게10kg","가자미21kg","대구10kg","오징어(국산) 23kg","꼬막살800g","참돔15kg","오징어(국산)3년21.3kg","오징어(국산)2년23kg","꽃게44KG","꽃게kg","대서양붉은볼락4kg","참돔5년20kg","참돔4년20kg","참돔3년20kg","참돔6년20kg","민어3년25kg","민어4년25kg","민어통25kg"],
   부재료:["간장소스5kg","양념소스5kg"],
   부자재:[]
 };
 const GBN_ORDER = ['반제품','원료','부재료','부자재'];
 
-// ══════════════════════════════════════════
-// 상태
-// ══════════════════════════════════════════
+let FG = [...FG_BASE];
+let NEW_FP = [];
 let curFP = null;
 let bom = {};
 let activeGbn = new Set(['반제품','원료','부재료','부자재']);
 
-try { const s = localStorage.getItem('wf_bom'); if(s) bom = JSON.parse(s); } catch(e){}
+// Firebase 연동
+function setFbStatus(state, msg) {
+  document.getElementById('fbDot').className = 'fb-dot ' + state;
+  document.getElementById('fbMsg').textContent = msg;
+}
 
-// ══════════════════════════════════════════
+async function loadFromFirebase() {
+  setFbStatus('loading', '로딩 중...');
+  try {
+    const data = await fetch(FB + '/BOM_EDITS.json').then(r => r.json());
+    if (data) {
+      Object.entries(data).forEach(([code, items]) => {
+        if (!Array.isArray(items)) return;
+        bom[code] = items.map(it => ({gbn: it.gbn || '원료', name: it.name || ''})).filter(it => it.name);
+        if (!FG.find(f => f.code === code)) {
+          const fpName = (items[0] && items[0].fpName) || code;
+          FG.push({code, name: fpName, isNew: true});
+          NEW_FP.push(code);
+        }
+      });
+      setFbStatus('ok', 'Firebase 연결됨');
+    } else {
+      setFbStatus('ok', 'Firebase 연결됨');
+    }
+  } catch(e) {
+    setFbStatus('err', '연결 오류 — 오프라인');
+  }
+  renderFPList();
+  updateStats();
+}
+
+async function saveToFirebase(code, fpName, items) {
+  const erp = items.map(it => ({gbn: it.gbn, name: it.name, fpName: fpName}));
+  const res = await fetch(FB + '/BOM_EDITS/' + encodeURIComponent(code) + '.json', {
+    method: 'PUT',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(erp)
+  });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+}
+
 // 완제품 목록
-// ══════════════════════════════════════════
 function renderFPList() {
   const q = document.getElementById('fpSearch').value.trim().toLowerCase();
   const items = q ? FG.filter(f => f.name.toLowerCase().includes(q) || f.code.toLowerCase().includes(q)) : FG;
   document.getElementById('fpCount').textContent = items.length;
   document.getElementById('fpList').innerHTML = items.map(fp => {
     const cnt = (bom[fp.code]||[]).length;
-    return `<div class="fp-item ${curFP&&curFP.code===fp.code?'sel':''}" onclick="selectFP('${fp.code}','${fp.name.replace(/'/g,"\\'")}')">
+    const isNew = fp.isNew || NEW_FP.includes(fp.code);
+    return `<div class="fp-item ${curFP&&curFP.code===fp.code?'sel':''} ${isNew?'is-new':''}" onclick="selectFP('${fp.code}','${fp.name.replace(/'/g,"\\'")}")">
       <span class="fp-code">${fp.code}</span>
       <span class="fp-name">${fp.name}</span>
-      ${cnt>0?`<span class="fp-badge">${cnt}</span>`:''}
+      ${isNew ? '<span class="new-badge">NEW</span>' : ''}
+      ${cnt>0 ? `<span class="fp-badge">${cnt}</span>` : ''}
     </div>`;
   }).join('');
 }
-function filterFP(){ renderFPList(); }
+function filterFP() { renderFPList(); }
 
 function selectFP(code, name) {
   curFP = {code, name};
   const bar = document.getElementById('selBar');
   bar.classList.remove('empty');
   bar.innerHTML = `<span class="code-badge">${code}</span><span class="fp-title">${name}</span>`;
-  renderFPList();
-  renderMatList();
-  renderBomList();
+  renderFPList(); renderMatList(); renderBomList();
 }
 
-// ══════════════════════════════════════════
-// 구분 필터 토글
-// ══════════════════════════════════════════
+// 신규 완제품 추가
+function openAddFpModal() {
+  document.getElementById('newFpCode').value = '';
+  document.getElementById('newFpName').value = '';
+  document.getElementById('addFpErr').textContent = '';
+  document.getElementById('addFpModal').classList.add('open');
+  setTimeout(() => document.getElementById('newFpCode').focus(), 80);
+}
+function closeAddFp() { document.getElementById('addFpModal').classList.remove('open'); }
+function confirmAddFp() {
+  const code = document.getElementById('newFpCode').value.trim().toUpperCase();
+  const name = document.getElementById('newFpName').value.trim();
+  const err = document.getElementById('addFpErr');
+  if (!code) { err.textContent = '품목코드를 입력하세요.'; return; }
+  if (!name) { err.textContent = '완제품명을 입력하세요.'; return; }
+  if (!/^P-\d+$/.test(code)) { err.textContent = '형식 오류: P-숫자 (예: P-576)'; return; }
+  if (FG.find(f => f.code === code)) { err.textContent = code + ' 코드가 이미 존재합니다.'; return; }
+  FG.push({code, name, isNew: true});
+  NEW_FP.push(code);
+  closeAddFp();
+  renderFPList();
+  selectFP(code, name);
+}
+
+// 구분 필터
 function toggleGbn(btn) {
   const g = btn.dataset.g;
   if (activeGbn.has(g)) { activeGbn.delete(g); btn.classList.remove('on'); }
@@ -288,38 +335,26 @@ function toggleGbn(btn) {
   renderMatList();
 }
 
-// ══════════════════════════════════════════
-// 자재 목록 (통합 — 구분별 섹션)
-// ══════════════════════════════════════════
+// 자재 목록
 function renderMatList() {
   const listEl = document.getElementById('matList');
-  if (!curFP) {
-    listEl.innerHTML = '<div class="mat-empty">← 완제품을 선택하면 자재 목록이 표시됩니다</div>';
-    return;
-  }
+  if (!curFP) { listEl.innerHTML = '<div class="mat-empty">← 완제품을 선택하면 자재 목록이 표시됩니다</div>'; return; }
   const q = document.getElementById('matSearch').value.trim().toLowerCase();
   const checkedSet = getCheckedSet();
-
-  let totalMatch = 0, totalAll = 0;
-  let html = '';
-
+  let totalMatch = 0, totalAll = 0, html = '';
   GBN_ORDER.forEach(gbn => {
     if (!activeGbn.has(gbn)) return;
     const all = MAT[gbn] || [];
     const items = q ? all.filter(n => n.toLowerCase().includes(q)) : all;
-    totalAll += all.length;
-    totalMatch += items.length;
-    if (items.length === 0 && q) return; // 검색 시 결과없는 섹션 숨김
-
-    const checkedInSection = items.filter(n => checkedSet.has(gbn+'|'+n)).length;
+    totalAll += all.length; totalMatch += items.length;
+    if (items.length === 0 && q) return;
+    const sel = items.filter(n => checkedSet.has(gbn+'|'+n)).length;
     html += `<div class="gbn-hd-row ${gbn}">
       <span class="gbn-hd ${gbn}">${gbn}</span>
-      <span class="gbn-cnt">${items.length}개${checkedInSection>0?` · <strong style="color:var(--accent)">${checkedInSection}개 선택</strong>`:''}</span>
+      <span class="gbn-cnt">${items.length}개${sel>0?` · <strong style="color:var(--accent)">${sel}개 선택</strong>`:''}</span>
       <button class="gbn-sel-btn" onclick="selectAllGbn('${gbn}')">전체선택</button>
       <button class="gbn-sel-btn" onclick="deselectAllGbn('${gbn}')" style="margin-left:2px">해제</button>
-    </div>
-    <div class="mat-grid">`;
-
+    </div><div class="mat-grid">`;
     items.forEach(name => {
       const ck = checkedSet.has(gbn+'|'+name);
       const safe = name.replace(/'/g,"\\'").replace(/"/g,'&quot;');
@@ -330,19 +365,10 @@ function renderMatList() {
     });
     html += '</div>';
   });
-
   if (!html) html = '<div class="mat-empty">검색 결과가 없습니다</div>';
-
   listEl.innerHTML = html;
-  document.getElementById('matchInfo').textContent = q
-    ? `${totalMatch} / ${totalAll}개 표시`
-    : `총 ${totalAll}개`;
-
-  // 카운트 업데이트
-  GBN_ORDER.forEach(g => {
-    const el = document.getElementById('gcnt-'+g);
-    if (el) el.textContent = MAT[g]?MAT[g].length:0;
-  });
+  document.getElementById('matchInfo').textContent = q ? `${totalMatch} / ${totalAll}개 표시` : `총 ${totalAll}개`;
+  GBN_ORDER.forEach(g => { const el = document.getElementById('gcnt-'+g); if(el) el.textContent = (MAT[g]||[]).length; });
 }
 
 function getCheckedSet() {
@@ -359,28 +385,20 @@ function toggleMat(el, gbn, name) {
   const idx = bom[code].findIndex(m => m.gbn===gbn && m.name===name);
   if (idx >= 0) {
     bom[code].splice(idx, 1);
-    el.classList.remove('ck');
-    const cb = el.querySelector('input');
-    if (cb) cb.checked = false;
+    el.classList.remove('ck'); const cb = el.querySelector('input'); if(cb) cb.checked = false;
   } else {
     bom[code].push({gbn, name});
-    el.classList.add('ck');
-    const cb = el.querySelector('input');
-    if (cb) cb.checked = true;
+    el.classList.add('ck'); const cb = el.querySelector('input'); if(cb) cb.checked = true;
   }
-  saveBom(); renderBomList(); updateStats(); renderFPList();
-  // 해당 섹션 카운트만 업데이트
+  renderBomList(); updateStats(); renderFPList();
   refreshSectionCount(gbn);
 }
 
 function refreshSectionCount(gbn) {
-  // 섹션 헤더의 선택 수 갱신 (전체 재렌더링 없이)
   const checkedSet = getCheckedSet();
   const q = document.getElementById('matSearch').value.trim().toLowerCase();
-  const all = MAT[gbn]||[];
-  const items = q ? all.filter(n=>n.toLowerCase().includes(q)) : all;
+  const items = q ? (MAT[gbn]||[]).filter(n=>n.toLowerCase().includes(q)) : (MAT[gbn]||[]);
   const cnt = items.filter(n=>checkedSet.has(gbn+'|'+n)).length;
-  // 해당 gbn 섹션 헤더 찾아서 업데이트
   document.querySelectorAll('.gbn-hd-row').forEach(row => {
     if (row.classList.contains(gbn)) {
       const cntEl = row.querySelector('.gbn-cnt');
@@ -392,52 +410,35 @@ function refreshSectionCount(gbn) {
 function selectAllGbn(gbn) {
   if (!curFP) return;
   const q = document.getElementById('matSearch').value.trim().toLowerCase();
-  const all = MAT[gbn]||[];
-  const items = q ? all.filter(n=>n.toLowerCase().includes(q)) : all;
+  const items = q ? (MAT[gbn]||[]).filter(n=>n.toLowerCase().includes(q)) : (MAT[gbn]||[]);
   const code = curFP.code;
   if (!bom[code]) bom[code]=[];
-  items.forEach(name => {
-    if (!bom[code].find(m=>m.gbn===gbn&&m.name===name)) bom[code].push({gbn,name});
-  });
-  saveBom(); renderMatList(); renderBomList(); updateStats(); renderFPList();
+  items.forEach(name => { if(!bom[code].find(m=>m.gbn===gbn&&m.name===name)) bom[code].push({gbn,name}); });
+  renderMatList(); renderBomList(); updateStats(); renderFPList();
 }
 function deselectAllGbn(gbn) {
   if (!curFP) return;
   const q = document.getElementById('matSearch').value.trim().toLowerCase();
-  const all = MAT[gbn]||[];
-  const items = new Set(q ? all.filter(n=>n.toLowerCase().includes(q)) : all);
+  const items = new Set(q ? (MAT[gbn]||[]).filter(n=>n.toLowerCase().includes(q)) : (MAT[gbn]||[]));
   const code = curFP.code;
   if (bom[code]) bom[code] = bom[code].filter(m=>!(m.gbn===gbn&&items.has(m.name)));
-  saveBom(); renderMatList(); renderBomList(); updateStats(); renderFPList();
+  renderMatList(); renderBomList(); updateStats(); renderFPList();
 }
 
-// ══════════════════════════════════════════
-// BOM 결과 패널
-// ══════════════════════════════════════════
+// BOM 결과
 function renderBomList() {
   const hdr = document.getElementById('bomFpHeader');
   const list = document.getElementById('bomList');
   const cnt = document.getElementById('bomCount');
-
   if (!curFP) {
-    hdr.classList.add('empty');
-    hdr.innerHTML = '<span class="nm">완제품을 선택하세요</span>';
-    list.innerHTML = '<div class="bom-empty">선택된 자재가 없습니다</div>';
-    cnt.textContent = '';
-    return;
+    hdr.classList.add('empty'); hdr.innerHTML = '<span class="nm">완제품을 선택하세요</span>';
+    list.innerHTML = '<div class="bom-empty">선택된 자재가 없습니다</div>'; cnt.textContent = ''; return;
   }
-
   hdr.classList.remove('empty');
   hdr.innerHTML = `<span class="code">${curFP.code}</span><span class="nm">${curFP.name}</span>`;
-
   const items = bom[curFP.code]||[];
   cnt.textContent = items.length ? `${items.length}개` : '';
-
-  if (!items.length) {
-    list.innerHTML = '<div class="bom-empty">위에서 자재를 체크하세요</div>';
-    return;
-  }
-
+  if (!items.length) { list.innerHTML = '<div class="bom-empty">위에서 자재를 체크하세요</div>'; return; }
   list.innerHTML = items.map((m,i)=>
     `<div class="bom-item">
       <span style="font-size:10px;color:var(--sub);width:16px;flex-shrink:0">${i+1}</span>
@@ -451,40 +452,51 @@ function renderBomList() {
 function removeMat(idx) {
   if (!curFP) return;
   bom[curFP.code].splice(idx, 1);
-  saveBom(); renderMatList(); renderBomList(); updateStats(); renderFPList();
+  renderMatList(); renderBomList(); updateStats(); renderFPList();
 }
 
-// ══════════════════════════════════════════
-// 저장 / 유틸
-// ══════════════════════════════════════════
-function saveBom() {
-  try { localStorage.setItem('wf_bom', JSON.stringify(bom)); } catch(e){}
+// 저장 → Firebase 전송
+async function saveCurrent() {
+  if (!curFP) { toast('완제품을 먼저 선택하세요'); return; }
+  const items = bom[curFP.code] || [];
+  if (!items.length) { toast('원재료를 1개 이상 선택하세요'); return; }
+  const btn = document.getElementById('saveBtn');
+  const statusEl = document.getElementById('saveStatus');
+  btn.disabled = true; btn.textContent = '전송 중...';
+  try {
+    await saveToFirebase(curFP.code, curFP.name, items);
+    btn.textContent = '✔ ERP 전송 완료';
+    statusEl.textContent = `[${curFP.code}] ${curFP.name} — ${new Date().toLocaleTimeString()} 저장`;
+    toast(`✅ ${curFP.name} → ERP LOT추적 즉시 반영`);
+    renderFPList();
+    setTimeout(() => { btn.disabled = false; btn.textContent = '💾 저장 → ERP 전송'; }, 2500);
+  } catch(e) {
+    btn.disabled = false; btn.textContent = '💾 저장 → ERP 전송';
+    toast('❌ 저장 실패: ' + e.message);
+  }
 }
-function saveCurrent() {
-  saveBom();
-  toast(`✔ ${curFP?curFP.name:''} 저장됨`);
-}
+
 function clearCurrentBom() {
   if (!curFP) return;
   if (!confirm(`[${curFP.code}] ${curFP.name} BOM을 초기화할까요?`)) return;
   delete bom[curFP.code];
-  saveBom(); renderMatList(); renderBomList(); updateStats(); renderFPList();
+  renderMatList(); renderBomList(); updateStats(); renderFPList();
 }
+
 function updateStats() {
   const fpCnt = Object.keys(bom).filter(k=>bom[k]&&bom[k].length>0).length;
   const mCnt = Object.values(bom).reduce((s,a)=>s+(a?a.length:0),0);
   document.getElementById('globalStats').innerHTML =
     `전체 BOM 등록: <strong>${fpCnt}</strong>개 완제품, <strong>${mCnt}</strong>개 자재 매핑`;
 }
+
 function toast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 2000);
+  setTimeout(()=>t.classList.remove('show'), 2500);
 }
 
-// ══════════════════════════════════════════
 // 전체 BOM 모달
-// ══════════════════════════════════════════
 function openAllBom() {
   const body = document.getElementById('allBomBody');
   const entries = Object.entries(bom).filter(([k,v])=>v&&v.length>0);
@@ -492,52 +504,32 @@ function openAllBom() {
     body.innerHTML = '<p style="text-align:center;color:var(--sub);padding:24px">등록된 BOM이 없습니다</p>';
   } else {
     body.innerHTML = entries.map(([code,mats])=>{
-      const fp = FG.find(f=>f.code===code);
-      const nm = fp?fp.name:code;
+      const fp = FG.find(f=>f.code===code); const nm = fp?fp.name:code;
       const rows = mats.map((m,i)=>
         `<tr><td style="padding:4px 8px;color:var(--sub)">${i+1}</td>
          <td style="padding:4px 8px"><span class="tag ${m.gbn}">${m.gbn}</span></td>
-         <td style="padding:4px 8px;font-size:12px">${m.name}</td></tr>`
-      ).join('');
-      return `<div style="margin-bottom:14px;border:1px solid var(--border);border-radius:8px;overflow:hidden">
+         <td style="padding:4px 8px;font-size:12px">${m.name}</td></tr>`).join('');
+      return `<div style="margin-bottom:12px;border:1px solid var(--border);border-radius:8px;overflow:hidden">
         <div style="background:var(--primary-light);padding:7px 12px;font-weight:700;font-size:13px;color:var(--primary)">
           <span style="background:var(--primary);color:#fff;font-size:10px;padding:2px 7px;border-radius:4px;margin-right:7px">${code}</span>${nm}
           <span style="float:right;font-size:11px;color:var(--sub)">${mats.length}개 자재</span>
-        </div>
-        <table style="width:100%"><tbody>${rows}</tbody></table>
-      </div>`;
+        </div><table style="width:100%"><tbody>${rows}</tbody></table></div>`;
     }).join('');
   }
   document.getElementById('allBomModal').classList.add('open');
 }
 function closeModal() { document.getElementById('allBomModal').classList.remove('open'); }
 
-// ══════════════════════════════════════════
-// JSON 저장
-// ══════════════════════════════════════════
-function exportJSON() {
-  const out = {};
-  Object.entries(bom).filter(([k,v])=>v&&v.length>0).forEach(([code,mats])=>{
-    const fp = FG.find(f=>f.code===code);
-    out[code] = {fpName:fp?fp.name:code, materials:mats};
-  });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([JSON.stringify(out,null,2)],{type:'application/json'}));
-  a.download = 'widfresh_bom.json'; a.click();
-  toast('JSON 다운로드됨');
-}
-
-// ══════════════════════════════════════════
-// Excel(CSV) 내보내기
-// ══════════════════════════════════════════
-function exportExcel() {
+// CSV 내보내기
+function exportCSV() {
   const entries = Object.entries(bom).filter(([k,v])=>v&&v.length>0);
   if (!entries.length) { toast('등록된 BOM이 없습니다'); return; }
-  let csv = '﻿완제품코드,완제품명,자재구분,자재명\n';
+  let csv = '﻿완제품코드,완제품명,자재구분,자재명
+';
   entries.forEach(([code,mats])=>{
-    const fp = FG.find(f=>f.code===code);
-    const nm = fp?fp.name:code;
-    mats.forEach(m => { csv += `"${code}","${nm}","${m.gbn}","${m.name}"\n`; });
+    const fp = FG.find(f=>f.code===code); const nm = fp?fp.name:code;
+    mats.forEach(m => { csv += `"${code}","${nm}","${m.gbn}","${m.name}"
+`; });
   });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
@@ -545,9 +537,9 @@ function exportExcel() {
   toast('CSV 다운로드됨');
 }
 
-// ── 시작 ──
-renderFPList();
-updateStats();
+// 시작
+loadFromFirebase();
+renderMatList();
 </script>
 </body>
 </html>
