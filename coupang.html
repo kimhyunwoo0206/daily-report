@@ -100,16 +100,44 @@ tbody td.tl{text-align:left}tbody td.tr{text-align:right}
 .ap-print-box{display:flex;border:1px solid #999;border-radius:4px;overflow:hidden;width:360px}
 .ap-print-step{flex:1;border-right:1px solid #999;padding:4px 8px;text-align:center;font-size:10px}
 .ap-print-step:last-child{border-right:none}.ap-print-step .sign{height:34px}
+#login-screen{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--navy),var(--navy2))}
+.login-box{background:#fff;border-radius:16px;padding:48px 40px;width:360px;box-shadow:0 4px 20px rgba(0,0,0,.15)}
+.login-logo{text-align:center;margin-bottom:32px}
+.login-logo .co{font-size:12px;color:var(--g4)}
+.login-logo .title{font-size:20px;font-weight:700;color:var(--navy);margin-top:4px}
+.login-logo .sub{font-size:11px;color:var(--teal);margin-top:2px;font-weight:600;letter-spacing:.08em}
+.fg{margin-bottom:16px}
+.fg label{display:block;font-size:12px;font-weight:600;color:var(--g5);margin-bottom:6px}
+.fg input{width:100%;padding:10px 14px;border:1.5px solid var(--g3);border-radius:var(--r);font-size:14px;outline:none}
+.fg input:focus{border-color:var(--blue)}
+.btn-login{width:100%;padding:12px;background:var(--navy);color:#fff;border:none;border-radius:var(--r);font-size:15px;font-weight:600;cursor:pointer;margin-top:8px}
+.login-err{color:var(--red);font-size:12px;text-align:center;margin-top:10px;min-height:18px}
+body.locked .topbar,body.locked .main{display:none}
+@media print{#login-screen{display:none!important}}
 </style>
 </head>
-<body>
+<body class="locked">
+<!-- 로그인 (ERP와 같은 계정) -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="co">㈜위드프레쉬</div>
+      <div class="title">쿠팡 수불대장</div>
+      <div class="sub">COUPANG STOCK LEDGER</div>
+    </div>
+    <div class="fg"><label>아이디</label><input type="text" id="uid" placeholder="아이디" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div class="fg"><label>비밀번호</label><input type="password" id="upw" placeholder="비밀번호" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="btn-login" onclick="doLogin()">로그인</button>
+    <div class="login-err" id="login-err"></div>
+  </div>
+</div>
 <div class="topbar">
   <div style="display:flex;align-items:center">
     <div class="topbar-logo">위드프레쉬 <span>쿠팡 수불대장</span></div>
     <button class="nav-btn active" id="nav-ilbo" data-p="ilbo">📋 생산·물류 일보</button>
     <button class="nav-btn" id="nav-lot" data-p="lot">🔍 LOT 조회</button>
   </div>
-  <span class="user-badge">쿠팡 납품 (서풍·상라·위드·MF)</span>
+  <div style="display:flex;align-items:center;gap:8px"><span class="user-badge" id="user-badge">쿠팡 납품 (서풍·상라·위드·MF)</span><button class="nav-btn" onclick="doLogout()">로그아웃</button></div>
 </div>
 <div class="main">
   <!-- 일보 -->
@@ -420,7 +448,28 @@ $('b-prev').onclick=()=>{const p=[...DATES].reverse().find(x=>x<CD);if(p)openDet
 $('b-next').onclick=()=>{const x=DATES.find(y=>y>CD);if(x)openDetail(x);};
 $('f-ch').onchange=()=>openDetail(CD);
 $('b-lot').onclick=searchLot;$('lot-inp').addEventListener('keydown',e=>{if(e.key==='Enter')searchLot();});
-load();
+
+// ── 로그인 (생산일보 ERP와 같은 계정·비밀번호)
+const USERS={'admin':{pw:'wf2024!',name:'김현우 공장장',role:'admin'},'ceo':{pw:'ceo2024!',name:'전경진 대표',role:'ceo'},'qc':{pw:'qc1234',name:'QC 열람',role:'qc'}};
+let LOADED=false;
+function enter(id){
+  const u=USERS[id];if(!u)return false;
+  document.body.classList.remove('locked');$('login-screen').style.display='none';
+  $('user-badge').textContent=u.name+' · 쿠팡 납품 (서풍·상라·위드·MF)';
+  if(!LOADED){LOADED=true;load();}
+  return true;
+}
+function doLogin(){
+  const id=$('uid').value.trim(),pw=$('upw').value,u=USERS[id];
+  if(!u||u.pw!==pw){$('login-err').textContent='아이디 또는 비밀번호 오류';return;}
+  $('login-err').textContent='';$('upw').value='';
+  sessionStorage.setItem('cp_user',id);enter(id);
+}
+function doLogout(){
+  sessionStorage.removeItem('cp_user');
+  document.body.classList.add('locked');$('login-screen').style.display='flex';$('uid').value='';$('upw').value='';
+}
+if(!enter(sessionStorage.getItem('cp_user')||''))$('uid').focus();
 </script>
 </body>
 </html>
