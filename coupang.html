@@ -189,11 +189,11 @@ const gt=g=>'<span class="gbn-tag gbn-'+g+'">'+g+'</span>';
 const lotBtn=(lot,kind,code)=>lot?'<button class="lot-btn" data-lot="'+E(lot)+'" data-kind="'+(kind||'')+'" data-code="'+E(code||'')+'">'+E(lot)+'</button>':'<span style="color:var(--g3)">-</span>';
 const cenOf=o=>o.center||(o.ch==='MF'?'MF34':o.ch);
 const rawGbn=c=>/^B-/.test(c)?'부재료':/^S-/.test(c)?'반제품':'원료';
-const isKg=c=>/^R-|^P-610/.test(c);
+const isKg=c=>false; // 재고는 구매단위(박스 등) 정수로 표시
 const ukOf=c=>{const l=CP.raw_lots.find(x=>x.code===c);return l&&l.unit_kg?l.unit_kg:1;};
 const nk=v=>{const x=n(v,1);return x==='-'?'0kg':x+'kg';};
 const kq=(c,q)=>isKg(c)?(q||0)*ukOf(c):q;
-const unitOf=c=>{if(/^B-/.test(c))return '팩';if(c==='S-701')return '축';if(c==='S-609')return '박스(1.2kg)';return 'kg';};
+const unitOf=c=>{if(/^B-/.test(c))return '팩';if(c==='S-701'||c==='S-609')return '축';const u=ukOf(c);return u&&u!==1?'박스('+u+'kg)':'kg';};
 
 async function load(){
   try{CP=await fetch(DATA_URL).then(r=>r.json());}catch(e){CP=null;}
@@ -255,16 +255,23 @@ function renderT1(d,ch,rows){
   UR.forEach(u=>{if(ch&&!u.sauce&&u.ch!==ch)return;const k=K(u.code,u.lot);if(u.date<d)bef[k]=(bef[k]||0)+u.qty;else if(u.date===d){tod[k]=(tod[k]||0)+u.qty;}});
   const lb={},lt={};if(!ch)V(CP.loss).forEach(x=>{const k=K(x.code,x.lot);if(x.date<d)lb[k]=(lb[k]||0)+x.qty;else if(x.date===d)lt[k]=(lt[k]||0)+x.qty;});
   rows.forEach(o=>o.raws.forEach(r=>{const lots=String(r.lot).split(',');lots.forEach(l=>{const k=K(r.code,l);(users[k]=users[k]||new Set()).add(o.pname.replace(/^위드프레쉬 (산지직송 )?/,''));});}));
-  const keys=new Set(Object.keys(tod));if(!ch)CP.raw_lots.filter(l=>l.date===d).forEach(l=>keys.add(K(l.code,l.lot)));
-  if(!keys.size)return nd('tb1');
-  const R=[...keys].map(k=>{const l=RAWLOT[k]||{};const [c,lot]=k.split('|');const prev=(l.date<d?(l.qty||0):0)-(bef[k]||0)-(lb[k]||0),inn=l.date===d?(l.qty||0):0,use=tod[k]||0,loss=lt[k]||0;return {c,lot,l,prev,inn,use,loss,cur:prev+inn-use-loss,us:users[k]};})
-    .sort((a,b)=>rawGbn(a.c).localeCompare(rawGbn(b.c))||a.c.localeCompare(b.c)||a.lot.localeCompare(b.lot));
+  // 품목코드별 누적재고(모든 LOT 합) + 당일 움직인 LOT 내역
+  const lotRow=k=>{const l=RAWLOT[k]||{};const [c,lot]=k.split('|');const prev=(l.date<d?(l.qty||0):0)-(bef[k]||0)-(lb[k]||0),inn=l.date===d?(l.qty||0):0,use=tod[k]||0,loss=lt[k]||0;return {c,lot,l,prev,inn,use,loss,cur:prev+inn-use-loss};};
+  const all=new Set();CP.raw_lots.filter(l=>l.date<=d).forEach(l=>all.add(K(l.code,l.lot)));Object.keys(tod).forEach(k=>all.add(k));
+  const byC=new Map();
+  [...all].forEach(k=>{const r=lotRow(k);if(ch&&!tod[k])return;const x=byC.get(r.c)||{c:r.c,prev:0,inn:0,use:0,loss:0,cur:0,lots:[]};x.prev+=r.prev;x.inn+=r.inn;x.use+=r.use;x.loss+=r.loss;x.cur+=r.cur;if(r.inn||r.use||r.loss)x.lots.push(r);byC.set(r.c,x);});
+  const R=[...byC.values()].filter(x=>Math.abs(x.prev)>0.0005||Math.abs(x.cur)>0.0005||x.lots.length)
+    .sort((a,b)=>rawGbn(a.c).localeCompare(rawGbn(b.c))||a.c.localeCompare(b.c));
+  if(!R.length)return nd('tb1');
   let h='<table><thead><tr><th>구분</th><th style="min-width:130px;text-align:left">품목명</th><th>LOT</th><th>규격</th><th>전일재고</th><th>입고</th><th>투입</th><th>현재고</th><th>거래처</th><th>비고</th></tr></thead><tbody>';
   const ni=(c,v)=>{const x=Math.round(kq(c,v)*1000)/1000;return Math.abs(x)<0.0005?'-':Number.isInteger(Math.round(x*1000)/1000)?x.toLocaleString('ko-KR'):n(x,1);};
-  R.forEach(r=>{const adj=String(r.l.src||'').includes('조정');
-    h+='<tr><td>'+gt(rawGbn(r.c))+'</td><td class="tl">'+E(nm(r.c))+'</td><td>'+lotBtn(r.lot,'raw',r.c)+'</td><td>'+unitOf(r.c)+'</td><td class="tr">'+ni(r.c,r.prev)+'</td><td class="tr">'+ni(r.c,r.inn)+'</td><td class="tr">'+n(kq(r.c,r.use+r.loss),1)+'</td>'
-      +'<td class="tr curr-col">'+ni(r.c,r.cur)+'</td><td style="font-size:11px">'+E(r.l.partner||(String(r.l.src||'').includes('MF')?'MF 당일 매입':''))+'</td>'
-      +'<td class="tl note-s">'+(adj?'<span class="adj">기초 이월</span>':'')+'</td></tr>';});
+  R.forEach(x=>{
+    h+='<tr style="font-weight:700"><td>'+gt(rawGbn(x.c))+'</td><td class="tl">'+E(nm(x.c))+' <span style="font-weight:400;color:var(--g4);font-size:11px">'+E(x.c)+'</span></td><td style="font-size:11px;color:var(--g4)">'+(x.lots.length?'당일 LOT '+x.lots.length+'건':'재고 이월')+'</td><td>'+unitOf(x.c)+'</td><td class="tr">'+ni(x.c,x.prev)+'</td><td class="tr">'+ni(x.c,x.inn)+'</td><td class="tr">'+ni(x.c,x.use+x.loss)+'</td>'
+      +'<td class="tr curr-col">'+ni(x.c,x.cur)+'</td><td></td><td></td></tr>';
+    x.lots.sort((a,b)=>a.lot.localeCompare(b.lot)).forEach(r=>{const adj=String(r.l.src||'').includes('보정');
+      h+='<tr style="color:var(--g5)"><td></td><td class="tl" style="padding-left:18px;font-size:11px">└ LOT 내역</td><td>'+lotBtn(r.lot,'raw',r.c)+'</td><td></td><td class="tr">'+ni(r.c,r.prev)+'</td><td class="tr">'+ni(r.c,r.inn)+'</td><td class="tr">'+ni(r.c,r.use+r.loss)+'</td>'
+        +'<td class="tr">'+ni(r.c,r.cur)+'</td><td style="font-size:11px">'+E(r.l.partner||(String(r.l.src||'').includes('MF')?'MF 당일 매입':''))+'</td>'
+        +'<td class="tl note-s">'+(adj?'<span class="adj">기초재고 보정</span>':'')+'</td></tr>';});});
   $('tb1').innerHTML=h+'</tbody></table>';
 }
 function renderT2(rows){
