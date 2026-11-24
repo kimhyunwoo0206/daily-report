@@ -119,10 +119,12 @@ tbody td.tl{text-align:left}tbody td.tr{text-align:right}
         <div class="card-hd">
           <span class="card-title">📋 일보 목록</span>
           <div class="filter-row">
-            <select id="f-mode"><option value="all">전체 기간</option><option value="month">월별 조회</option></select>
+            <select id="f-mode"><option value="all">전체 기간</option><option value="month">월별 조회</option><option value="range">기간 조회</option></select>
             <input type="month" id="f-month" style="display:none">
+            <span id="f-range" style="display:none"><input type="date" id="f-from"> ~ <input type="date" id="f-to"></span>
             <select id="f-ch-list"><option value="">전체 채널</option><option>서풍</option><option>상라</option><option>위드</option><option>MF</option></select>
             <button class="btn btn-outline" id="b-list">조회</button>
+            <button class="btn btn-primary" id="b-xls-list">📥 엑셀 다운로드</button>
           </div>
         </div>
         <div class="card-body"><div id="list-body"><div class="loading"><div class="spinner"></div><br>쿠팡 수불 데이터 로딩 중...</div></div></div>
@@ -138,6 +140,7 @@ tbody td.tl{text-align:left}tbody td.tr{text-align:right}
           <button class="btn btn-outline btn-sm" id="b-prev">◀ 이전일</button>
           <button class="btn btn-outline btn-sm" id="b-next">다음일 ▶</button>
           <select id="f-ch"><option value="">전체 채널</option><option value="서풍">서풍 (곰곰)</option><option value="상라">상라 (곰곰)</option><option value="위드">위드 (직공급)</option><option value="MF">MF</option></select>
+          <button class="btn btn-primary" id="b-xls-day">📥 엑셀</button>
           <button class="btn btn-print" onclick="window.print()">🖨️ 인쇄</button>
         </div>
       </div>
@@ -214,7 +217,8 @@ function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.r
 function loadList(){
   $('list-view').style.display='block';$('detail-view').style.display='none';
   const mode=$('f-mode').value,month=$('f-month').value,ch=$('f-ch-list').value;
-  let ds=DATES.filter(d=>(mode!=='month'||d.startsWith(month)));
+  const [rf,rt]=listRange();
+  let ds=DATES.filter(d=>d>=rf&&d<=rt);
   const wrap=document.createElement('div');wrap.className='ilbo-list';let lastM='';
   ds=[...ds].reverse().filter(d=>!ch||CP.out.some(o=>o.date===d&&o.ch===ch));
   if(!ds.length){$('list-body').innerHTML='<div class="empty">데이터 없음</div>';return;}
@@ -369,7 +373,48 @@ document.addEventListener('click',e=>{
   if(e.target.id==='b-mclose'||e.target.id==='modal'){closeLot();return;}
   if(e.target.id==='b-mprint'){document.body.classList.add('printing-modal');window.print();document.body.classList.remove('printing-modal');}
 });
-$('f-mode').onchange=()=>{$('f-month').style.display=$('f-mode').value==='month'?'block':'none';};
+$('f-mode').onchange=()=>{const m=$('f-mode').value;$('f-month').style.display=m==='month'?'block':'none';$('f-range').style.display=m==='range'?'inline':'none';};
+
+// ── 기간 · 엑셀 다운로드 (CCP 일지 기초자료)
+function listRange(){
+  const m=$('f-mode').value;
+  if(m==='month'){const mo=$('f-month').value;return [mo+'-01',mo+'-31'];}
+  if(m==='range'){return [$('f-from').value||'0000-00-00',$('f-to').value||'9999-99-99'];}
+  return ['0000-00-00','9999-99-99'];
+}
+let XLSXP=null;
+function loadXlsx(){
+  if(window.XLSX)return Promise.resolve();
+  if(!XLSXP)XLSXP=new Promise((ok,ng)=>{const s=document.createElement('script');s.src='https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js';s.onload=ok;s.onerror=()=>ng(new Error('엑셀 라이브러리를 불러오지 못했습니다'));document.head.appendChild(s);});
+  return XLSXP;
+}
+const r3=v=>Math.round((v||0)*1000)/1000;
+async function exportXlsx(from,to,ch){
+  try{await loadXlsx();}catch(e){alert(e.message);return;}
+  const rows=CP.out.filter(o=>o.date>=from&&o.date<=to&&(!ch||o.ch===ch)).sort((a,b)=>a.date.localeCompare(b.date)||a.ch.localeCompare(b.ch)||a.code.localeCompare(b.code));
+  if(!rows.length){alert('해당 기간 자료가 없습니다.');return;}
+  const s1=[['생산일','요일','채널','품목코드','품목명','제품LOT','생산수량','출고수량','제품중량(kg)','출고처','근거']];
+  const DEST={'위드':'쿠팡 주식회사','서풍':'영어조합법인 서풍','상라':'상라','MF':'쿠팡 MF34'};
+  rows.forEach(o=>s1.push([o.date,dow(o.date),o.ch,o.code,o.pname,o.lot,o.qty,o.qty,o.kg||'',(o.center&&o.center!=='-')?o.center:(DEST[o.ch]||o.ch),o.src||'']));
+  const s2=[['생산일','채널','완제품코드','완제품명','제품LOT','구분','원료코드','원료명','원료LOT','투입량','단위','비고']];
+  const day={};
+  rows.forEach(o=>o.raws.forEach(r=>{
+    s2.push([o.date,o.ch,o.code,o.pname,o.lot,rawGbn(r.code),r.code,nm(r.code),r.lot,r.sauce?(r.qty!=null?r3(r.qty):''):r3(r.qty),unitOf(r.code),r.sauce?(r.note||'소스'):'']);
+    if(!r.sauce){const k=o.date+'|'+r.code+'|'+r.lot;day[k]=(day[k]||0)+(r.qty||0);}
+  }));
+  const s3=[['투입일','구분','원료코드','원료명','원료LOT','투입량(구매단위 정수)','단위']];
+  Object.keys(day).sort().forEach(k=>{const [d,c,l]=k.split('|');s3.push([d,rawGbn(c),c,nm(c),l,Math.round(day[k]),unitOf(c)]);});
+  const s4=[['입고일','구분','원료코드','원료명','원료LOT','입고수량','단위','거래처','입고구분']];
+  CP.raw_lots.filter(l=>l.date>=from&&l.date<=to&&(!ch||(ch==='MF')===String(l.src||'').includes('MF'))).sort((a,b)=>a.date.localeCompare(b.date)||a.code.localeCompare(b.code))
+    .forEach(l=>s4.push([l.date,rawGbn(l.code),l.code,nm(l.code),l.lot,Math.round(l.qty),unitOf(l.code),l.partner||'',l.src||'']));
+  const wb=XLSX.utils.book_new();
+  [['생산출고',s1,[11,6,6,9,34,10,9,9,11,10,30]],['원료투입(제품별)',s2,[11,6,9,30,10,7,9,24,10,10,10,24]],['원료투입(일별LOT)',s3,[11,7,9,26,10,14,10]],['원료입고',s4,[11,7,9,26,10,10,10,24,22]]]
+    .forEach(([n,a,w])=>{const ws=XLSX.utils.aoa_to_sheet(a);ws['!cols']=w.map(x=>({wch:x}));ws['!autofilter']={ref:ws['!ref']};XLSX.utils.book_append_sheet(wb,ws,n);});
+  const lbl=(from<'1000'?DATES[0]:from)+'_'+(to>'9000'?DATES[DATES.length-1]:to)+(ch?'_'+ch:'');
+  XLSX.writeFile(wb,'쿠팡수불_'+lbl+'.xlsx');
+}
+$('b-xls-list').onclick=()=>{const [f,t]=listRange();exportXlsx(f,t,$('f-ch-list').value);};
+$('b-xls-day').onclick=()=>exportXlsx(CD,CD,$('f-ch').value);
 $('b-list').onclick=loadList;$('b-back').onclick=loadList;
 $('b-prev').onclick=()=>{const p=[...DATES].reverse().find(x=>x<CD);if(p)openDetail(p);};
 $('b-next').onclick=()=>{const x=DATES.find(y=>y>CD);if(x)openDetail(x);};
