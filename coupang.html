@@ -300,10 +300,10 @@ function renderT1(d,ch,rows){
   R.forEach(x=>{
     h+='<tr style="font-weight:700"><td>'+gt(rawGbn(x.c))+'</td><td class="tl">'+E(nm(x.c))+' <span style="font-weight:400;color:var(--g4);font-size:11px">'+E(x.c)+'</span></td><td style="font-size:11px;color:var(--g4)">'+(x.lots.length?'당일 LOT '+x.lots.length+'건':'재고 이월')+'</td><td>'+unitOf(x.c)+'</td><td class="tr">'+ni(x.c,x.prev)+'</td><td class="tr">'+ni(x.c,x.inn)+'</td><td class="tr">'+ni(x.c,x.use+x.loss)+'</td>'
       +'<td class="tr curr-col">'+ni(x.c,x.cur)+'</td><td></td><td></td></tr>';
-    x.lots.sort((a,b)=>a.lot.localeCompare(b.lot)).forEach(r=>{const adj=String(r.l.src||'').includes('보정');
+    x.lots.sort((a,b)=>a.lot.localeCompare(b.lot)).forEach(r=>{const adj=false;
       h+='<tr style="color:var(--g5)"><td></td><td class="tl" style="padding-left:18px;font-size:11px">└ LOT 내역</td><td>'+lotBtn(r.lot,'raw',r.c)+'</td><td></td><td class="tr">'+ni(r.c,r.prev)+'</td><td class="tr">'+ni(r.c,r.inn)+'</td><td class="tr">'+ni(r.c,r.use+r.loss)+'</td>'
         +'<td class="tr">'+ni(r.c,r.cur)+'</td><td style="font-size:11px">'+E(r.l.partner||(String(r.l.src||'').includes('MF')?'MF 당일 매입':''))+'</td>'
-        +'<td class="tl note-s">'+(adj?'<span class="adj">기초재고 보정</span>':'')+'</td></tr>';});});
+        +'<td class="tl note-s"></td></tr>';});});
   $('tb1').innerHTML=h+'</tbody></table>';
 }
 function renderT2(rows){
