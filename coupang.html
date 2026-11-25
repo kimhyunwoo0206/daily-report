@@ -318,11 +318,13 @@ function renderT2(rows){
 function renderT3(rows){
   if(!rows.length)return nd('tb3');
   const G=new Map();
-  rows.forEach(o=>{const k=o.code+'|'+o.ch;const g=G.get(k)||{o,qty:0,cen:{}};g.qty+=o.qty;g.cen[cenOf(o)]=(g.cen[cenOf(o)]||0)+o.qty;G.set(k,g);});
-  let h='<table><thead><tr><th>구분</th><th style="min-width:160px;text-align:left">품목명</th><th>LOT</th><th>규격</th><th>전일재고</th><th>생산</th><th>출고</th><th>현재고</th><th>출고처</th><th>비고</th></tr></thead><tbody>';
+  rows.forEach(o=>{const k=o.code+'|'+o.ch;const g=G.get(k)||{o,qty:0,cen:{},rw:{}};g.qty+=o.qty;g.cen[cenOf(o)]=(g.cen[cenOf(o)]||0)+o.qty;
+    o.raws.forEach(r=>{const rk=r.code+'|'+r.lot;g.rw[rk]=(g.rw[rk]||0)+(r.qty||0);});G.set(k,g);});
+  const rwTxt=g=>Object.entries(g.rw).map(([k,q])=>{const [c,l]=k.split('|');return E(nm(c))+' '+E(l)+' '+n(q,1)+unitOf(c).replace(/^박스.*/,'박스');}).join('<br>');
+  let h='<table><thead><tr><th>구분</th><th style="min-width:160px;text-align:left">품목명</th><th>LOT</th><th>규격</th><th>전일재고</th><th>생산</th><th>출고</th><th>현재고</th><th>출고처</th><th style="text-align:left">투입 원료·소스 (레시피)</th></tr></thead><tbody>';
   [...G.values()].sort((a,b)=>a.o.ch.localeCompare(b.o.ch)||b.qty-a.qty).forEach(g=>{
     h+='<tr><td>'+gt('완제품')+'</td><td class="tl">'+E(g.o.pname)+'</td><td>'+lotBtn(g.o.lot,'prod',g.o.code)+'</td><td>'+(g.o.kg?n(g.o.kg)+'kg':'EA')+'</td><td class="tr">-</td><td class="tr">'+n(g.qty,0)+'</td><td class="tr">'+n(g.qty,0)+'</td><td class="tr curr-col">-</td>'
-      +'<td style="font-size:11px;text-align:left">'+(g.o.ch==='MF'?'':'<span class="ch-tag">'+E(g.o.ch)+'</span>')+(Object.keys(g.cen).length===1?E(Object.keys(g.cen)[0]):Object.entries(g.cen).map(([c,q])=>E(c)+' '+n(q,0)+'개').join(' · '))+'</td><td class="tl note-s">'+E(g.o.code)+'</td></tr>';});
+      +'<td style="font-size:11px;text-align:left">'+(g.o.ch==='MF'?'':'<span class="ch-tag">'+E(g.o.ch)+'</span>')+(Object.keys(g.cen).length===1?E(Object.keys(g.cen)[0]):Object.entries(g.cen).map(([c,q])=>E(c)+' '+n(q,0)+'개').join(' · '))+'</td><td class="tl note-s" style="white-space:normal">'+E(g.o.code)+(Object.keys(g.rw).length?'<br>'+rwTxt(g):'')+'</td></tr>';});
   $('tb3').innerHTML=h+'</tbody></table>';
 }
 function renderT4(d,ch,rows){
@@ -430,6 +432,8 @@ async function exportXlsx(from,to,ch){
     s2.push([o.date,o.ch,o.code,o.pname,o.lot,rawGbn(r.code),r.code,nm(r.code),r.lot,r.sauce?(r.qty!=null?r3(r.qty):''):r3(r.qty),unitOf(r.code),r.sauce?(r.note||'소스'):'']);
     if(!r.sauce){const k=o.date+'|'+r.code+'|'+r.lot;day[k]=(day[k]||0)+(r.qty||0);}
   }));
+  const sc=new Set();rows.forEach(o=>o.raws.forEach(r=>{if(r.sauce)sc.add(r.code);}));
+  V(CP.sauce).filter(s=>s.date>=from&&s.date<=to&&sc.has(s.code)).forEach(s=>V(s.lots).forEach(l=>{const k=s.date+'|'+l.code+'|'+l.lot;day[k]=(day[k]||0)+(l.qty||0);}));
   const s3=[['투입일','구분','원료코드','원료명','원료LOT','투입량(구매단위 정수)','단위']];
   Object.keys(day).sort().forEach(k=>{const [d,c,l]=k.split('|');s3.push([d,rawGbn(c),c,nm(c),l,Math.round(day[k]),unitOf(c)]);});
   const s4=[['입고일','구분','원료코드','원료명','원료LOT','입고수량','단위','거래처','입고구분']];
